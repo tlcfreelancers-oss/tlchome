@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Profile - Emma Davis</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Open Sans', sans-serif;
+    background: #0a1628;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .card-wrapper {
+    width: 900px;
+    height: 450px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .card {
+    width: 960px;
+    background: linear-gradient(135deg, #0d1f3c 0%, #0a1628 40%, #0d1f3c 100%);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    min-height: 580px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    transform: scale(0.7407);
+    transform-origin: top left;
+  }
+
+  /* Hexagon background pattern */
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='104' viewBox='0 0 120 104'%3E%3Cpolygon points='60,2 118,32 118,72 60,102 2,72 2,32' fill='none' stroke='rgba(30,80,160,0.18)' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-size: 120px 104px;
+    opacity: 1;
+    pointer-events: none;
+  }
+
+  /* LEFT PANEL */
+  .left-panel {
+    width: 300px;
+    flex-shrink: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header top bar */
+  .header-bar {
+    padding: 22px 24px 16px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .employee-profile-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .title-line {
+    width: 50px;
+    height: 3px;
+    background: #4a9eff;
+  }
+
+  /* Photo area */
+  .photo-area {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .photo-gradient-overlay {
+  
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, transparent 60%, #0d1f3c 100%),
+                linear-gradient(to top, #0d1f3c 0%, transparent 30%);
+    z-index: 1;
+  }
+
+  .profile-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    min-height: 380px;
+  }
+
+  /* No photo fallback */
+  .photo-placeholder {
+    width: 100%;
+    min-height: 380px;
+   /* background: linear-gradient(135deg, #1a3a6e 0%, #0d2550 100%);*/
+   background: url('TetaKollie.png');
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .avatar-circle {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2a5298 0%, #1a3a6e 100%);
+    border: 3px solid rgba(74, 158, 255, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+  }
+
+  /* CENTER PANEL */
+  .center-panel {
+    flex: 1;
+    padding: 0 24px 24px;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Name block — overlaid at top of center */
+  .name-block {
+    padding: 100px 0 20px;
+    position: relative;
+  }
+
+  .name-block::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 60px;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(20,50,100,0.6) 0%, rgba(13,31,60,0.3) 100%);
+    border-radius: 6px;
+    z-index: -1;
+  }
+
+  .person-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 38px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.1;
+    letter-spacing: 0.5px;
+  }
+
+  .person-title {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* Section */
+  .section {
+    margin-top: 18px;
+  }
+
+  .section-heading {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #f0a500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .summary-text {
+    font-size: 12px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.75);
+  }
+
+  /* Skills */
+  .skill-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .skill-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(74,158,255,0.15);
+    border: 1px solid rgba(74,158,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .skill-icon svg {
+    width: 16px;
+    height: 16px;
+    fill: #4a9eff;
+  }
+
+  .skill-text strong {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  .skill-text span {
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+  }
+
+  /* RIGHT PANEL */
+  .right-panel {
+    width: 350px;
+    flex-shrink: 0;
+    padding: 22px 20px 20px;
+    position: relative;
+    z-index: 2;
+    background: rgba(5,15,35,0.4);
+    border-left: 1px solid rgba(74,158,255,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* Achievements */
+  .achievement-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .achievement-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(74,158,255,0.15);
+    border: 1px solid rgba(240,165,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .achievement-icon svg {
+    width: 16px;
+    height: 16px;
+    fill: #f0a500;
+  }
+
+  .achievement-text {
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.5;
+  }
+
+  /* Career Timeline */
+  .timeline {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    margin-top: 8px;
+    position: relative;
+  }
+
+  .timeline-node {
+    flex: 1;
+    position: relative;
+  }
+
+  .timeline-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #4a9eff;
+    border: 2px solid #4a9eff;
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .timeline-node:not(:last-child) .timeline-dot::after {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 3px;
+    width: calc(100% + 50px);
+    height: 1px;
+    background: repeating-linear-gradient(to right, #4a9eff 0, #4a9eff 4px, transparent 4px, transparent 8px);
+  }
+
+  .timeline-year {
+    font-size: 10px;
+    font-weight: 700;
+    color: #4a9eff;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  .timeline-role {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-top: 2px;
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.3;
+  }
+
+  .timeline-company {
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* Personal Touch */
+  .personal-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.75);
+  }
+
+  .personal-item::before {
+    content: '▶';
+    font-size: 7px;
+    color: #4a9eff;
+    flex-shrink: 0;
+  }
+
+  /* Contact */
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 7px;
+  }
+
+  .contact-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    background: rgba(74,158,255,0.15);
+    border: 1px solid rgba(74,158,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .contact-icon svg {
+    width: 14px;
+    height: 14px;
+    fill: #4a9eff;
+  }
+
+  .contact-text {
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.75);
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  hr.divider {
+    border: none;
+    border-top: 1px solid rgba(74,158,255,0.1);
+    margin: 14px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="card-wrapper">
+<div class="card">
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="header-bar">
+      <div class="employee-profile-title">FREELANCER </div>
+    </div>
+    <div class="photo-area">
+      <div class="photo-gradient-overlay"></div>
+      <img src="TetaKollie2.png" width="300"/>
+    </div>
+  </div>
+
+  <!-- CENTER PANEL -->
+  <div class="center-panel">
+    <div class="name-block">
+      <div class="person-name">Teta Kollie</div>
+      <div class="person-title">Senior Marketing Specialist</div>
+    </div>
+
+    <div class="section">
+      <div class="section-heading">Professional Summary</div>
+      <p class="summary-text">
+        Marketing professional with 10+ years of experience in brand storytelling, campaign management, and digital marketing strategy. Skilled in driving engagement and building high-impact content across global markets.
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-heading">Key Skills</div>
+
+      <div class="skill-item">
+        <div class="skill-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11 2C6.477 2 2 6.477 2 11s4.477 9 9 9 9-4.477 9-9-4.477-9-9-9zm0 2a7 7 0 1 1 0 14A7 7 0 0 1 11 4zm0 2a5 5 0 1 0 0 10A5 5 0 0 0 11 6zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm9.485 9.071l1.414 1.414-2.121 2.122-1.414-1.415z"/></svg>
+        </div>
+        <div class="skill-text">
+          <strong>Strategic Campaign Planning</strong>
+          <span>Creating goal-driven marketing campaigns.</span>
+        </div>
+      </div>
+
+      <div class="skill-item">
+        <div class="skill-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm-4 10a3 3 0 0 0-3 3v1h2v-1a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v1h2v-1a3 3 0 0 0-3-3H8zm9-2h2v2h-2zm3 0h2v2h-2z"/></svg>
+        </div>
+        <div class="skill-text">
+          <strong>Social Media Management</strong>
+          <span>Growing and engaging online audiences.</span>
+        </div>
+      </div>
+
+      <div class="skill-item">
+        <div class="skill-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M15 2H9a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm0 2v16H9V4h6zM7 6H5v12h2V6zm10 0h2v12h-2V6z"/></svg>
+        </div>
+        <div class="skill-text">
+          <strong>SEO &amp; Content Marketing</strong>
+          <span>Boosting visibility through optimized content.</span>
+        </div>
+      </div>
+
+      <div class="skill-item">
+        <div class="skill-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 3h18v2H3V3zm0 4h12v2H3V7zm0 4h18v2H3v-2zm0 4h12v2H3v-2zm0 4h18v2H3v-2z"/></svg>
+        </div>
+        <div class="skill-text">
+          <strong>Market Research &amp; Analysis</strong>
+          <span>Understanding trends and customer needs.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+    <div class="section-heading">Achievements</div>
+
+    <div class="achievement-item">
+      <div class="achievement-icon">
+        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+      </div>
+      <div class="achievement-text">Increased social media engagement by 200% in one year.</div>
+    </div>
+
+    <div class="achievement-item">
+      <div class="achievement-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <div class="achievement-text">Managed a $1M ad budget across multiple platforms.</div>
+    </div>
+
+    <div class="achievement-item">
+      <div class="achievement-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+      </div>
+      <div class="achievement-text">Won "Best Marketing Campaign" award in 2024.</div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section-heading">Career Highlights</div>
+
+    <div class="timeline">
+      <div class="timeline-node">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">2015–2018</div>
+        <div class="timeline-role">Content Strategist,</div>
+        <div class="timeline-company">BrandPro</div>
+      </div>
+      <div class="timeline-node">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">2018–2022</div>
+        <div class="timeline-role">Marketing Manager,</div>
+        <div class="timeline-company">ABC Agency</div>
+      </div>
+      <div class="timeline-node">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">2022–Present</div>
+        <div class="timeline-role">Senior Marketing Specialist,</div>
+        <div class="timeline-company">XYZ Corp</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section-heading">Personal Touch</div>
+    <div class="personal-item">Speaks 3 languages fluently.</div>
+    <div class="personal-item">Amateur photographer &amp; marathon runner.</div>
+    <div class="personal-item">Volunteers at local animal shelter.</div>
+
+    <hr class="divider">
+
+    <div class="section-heading">Contact Details</div>
+    <div class="contact-item">
+      <div class="contact-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      </div>
+      <div class="contact-text">emma.davis@xyzcorp.com</div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-icon">
+        <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+      </div>
+      <div class="contact-text">+01 2345 6789</div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+      </div>
+      <div class="contact-text">Add your text here</div>
+    </div>
+  </div>
+</div>
+</div>
+
+</body>
+</html>
