@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLC Freelancers - Premier Web & Technical Engineering Collective</title>
+    <style>
+        /* --- CONFIGURATION & DESIGN TOKENS --- */
+        :root {
+            --netflix-red: #E50914;
+            --netflix-red-hover: #C11119;
+            --netflix-yellow: #E5B009;
+            --bg-dark: #0a0a0c;
+            --bg-card: #141414;
+            --text-main: #FFFFFF;
+            --text-muted: #808080;
+            --font-base: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-base);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- STICKY NAVIGATION BAR --- */
+        header {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            z-index: 100;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
+           
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .brand-logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--netflix-red);
+            text-decoration: none;
+            line-height: 1;
+        }
+        
+        .brand-logo span {
+            display: block;
+            font-size: 0.55rem;
+            color: var(--text-main);
+            letter-spacing: 1px;
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        .main-menu {
+            display: flex;
+            gap: 18px;
+            list-style: none;
+        }
+
+        .main-menu a {
+            color: #e5e5e5;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .main-menu a:hover, .main-menu a.active {
+            color: var(--netflix-red);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-icon {
+            color: var(--text-main);
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .user-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            text-align: right;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            background: #2b70e4;
+            display: inline-block;
+        }
+
+        /* --- HERO BANNER & SLIDESHOW CAROUSEL --- */
+        .hero-banner {
+            position: relative;
+            width: 100%;
+            height: 90vh;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Continuous Background Carousel Slide Mechanics */
+        .carousel-bg-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .slide-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            transform: scale(1.05);
+        }
+
+        .slide-bg.active {
+            opacity: 0.25; /* Maintains uniform dark mood visibility */
+            transform: scale(1);
+            transition: opacity 1.5s ease-in-out, transform 8s linear;
+        }
+
+        /* --- 3D SKEWED STAGE DISPLAY VIEW --- */
+        .stage-3d-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1300px;
+            margin: 40px auto 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1200px;
+            padding: 0 40px;
+        }
+
+        .stage-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 40;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stage-arrow-left { left: 20px; }
+        .stage-arrow-right { right: 20px; }
+
+        .deck-wing {
+            flex: 1;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.5s ease;
+        }
+
+        .deck-wing-left {
+            transform: rotateY(35deg) translateZ(-50px);
+        }
+
+        .deck-wing-right {
+            transform: rotateY(-35deg) translateZ(-50px);
+        }
+
+        /* Dynamic Showcase Cards */
+        .showcase-card {
+            width: 180px;
+            height: 270px;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: -5px 15px 30px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.05);
+            background: var(--bg-card);
+            position: relative;
+            flex-shrink: 0;
+            transition: transform 0.3s;
+        }
+
+        .showcase-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .showcase-card .wing-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
+            padding: 15px 10px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        /* Centered Hero Spotlight Showcase Card */
+        .center-spotlight-card {
+            width: 360px;
+            height: 400px;
+            background: var(--bg-card);
+            border-radius: 6px;
+            box-shadow: 0px 20px 40px rgba(0,0,0,0.9);
+            position: relative;
+            z-index: 30;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            transform: translateZ(50px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .center-spotlight-card img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .spotlight-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(10,10,12,1) 0%, rgba(10,10,12,0.6) 50%, rgba(0,0,0,0.2) 100%);
+            z-index: 2;
+        }
+
+        .spotlight-info-payload {
+            position: relative;
+            z-index: 3;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .meta-badge-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 0.75rem;
+            color: #dcdcdc;
+        }
+
+        .top-badge {
+            background-color: var(--netflix-yellow);
+            color: #000;
+            font-weight: 900;
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+        }
+
+        .rating-star {
+            color: var(--netflix-yellow);
+            font-weight: 700;
+        }
+
+        .spotlight-info-payload h2 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .spotlight-info-payload p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .spotlight-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .btn-watch { background-color: var(--netflix-red); color: #fff; }
+        .btn-list { background-color: var(--netflix-yellow); color: #000; }
+
+        /* --- INTERACTIVE SEARCH CONTROL DASHBOARD --- */
+        .dashboard-control-deck {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 520px;
+            margin: 40px auto 0 auto;
+            text-align: center;
+        }
+
+        .search-input-container {
+            display: flex;
+            border: 1px solid #333;
+            background: rgba(0,0,0,0.85);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .search-input-container input {
+            flex-grow: 1;
+            height: 44px;
+            background: transparent;
+            border: none;
+            padding: 0 16px;
+            color: #fff;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            outline: none;
+        }
+
+        .search-action-trigger {
+            background: white;
+            border: none;
+            color: var(--netflix-red);
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 0 20px;
+            cursor: pointer;
+            letter-spacing: 1px;
+        }
+
+        .search-subtext-tags {
+            font-size: 0.75rem;
+            color: #55555c;
+            margin-top: 10px;
+            word-spacing: 2px;
+        }
+
+        .app-download-footer-widget {
+            position: absolute;
+            bottom: 30px;
+            left: 60px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .social-media-widget {
+            position: absolute;
+            bottom: 30px;
+            right: 60px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* --- CONTINUOUS INFINITE SCROLLER ROW --- */
+        .infinite-slider-row-wrapper {
+            background-color: var(--bg-dark);
+            padding: 40px 0;
+            position: relative;
+        }
+
+        .slider-row-header {
+            max-width: 1400px;
+            margin: 0 auto 15px auto;
+            padding: 0 60px;
+        }
+
+        .slider-row-header p {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2px;
+        }
+
+        .slider-row-header h3 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #e5e5e5;
+        }
+
+        /* Infinite CSS Scrolling System Track Animation */
+        .infinite-carousel-container {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+        }
+
+        .infinite-track-loop {
+            display: flex;
+            gap: 15px;
+            width: max-content;
+            animation: continuousMarqueeLoop 30s linear infinite;
+            padding: 10px 0;
+        }
+
+        /* Pause infinite animation track state when targeting item details */
+        .infinite-carousel-container:hover .infinite-track-loop {
+            animation-play-state: paused;
+        }
+
+        .loop-card {
+            width: 250px;
+            height: 140px;
+            background-color: var(--bg-card);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            flex-shrink: 0;
+            border: 1px solid rgba(255,255,255,0.03);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .loop-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .loop-card-meta {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 12px;
+        }
+
+        .loop-card-meta h4 { font-size: 0.85rem; margin-bottom: 2px; }
+        .loop-card-meta p { font-size: 0.7rem; color: var(--text-muted); }
+
+        .loop-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--netflix-red);
+        }
+
+        @keyframes continuousMarqueeLoop {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-50% - 7.5px)); }
+        }
+
+        /* --- ABOUT CORPORATE INFRASTRUCTURE LAYOUT --- */
+        .tlc-about-block {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 60px;
+            border-top: 1px solid #1a1a1f;
+        }
+
+        .about-grid-frame {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-text-deck h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
+
+        .about-text-deck p {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #a2a2ad;
+            margin-bottom: 15px;
+        }
+
+        .process-pipeline-block {
+            background-color: var(--bg-card);
+            padding: 30px;
+            border-left: 4px solid var(--netflix-red);
+            border-radius: 4px;
+        }
+
+        .process-pipeline-block h4 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: #fff;
+        }
+
+        .process-pipeline-block ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .process-pipeline-block li {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .process-pipeline-block li::before {
+            content: "✓";
+            color: var(--netflix-red);
+            font-weight: bold;
+        }
+
+        /* --- RESPONSIVE MEDIA BREAKPOINTS --- */
+        @media (max-width: 1024px) {
+            .deck-wing { display: none; }
+            .about-grid-frame { grid-template-columns: 1fr; gap: 30px; }
+            .hero-banner { height: auto; padding: 120px 0 60px 0; }
+            .app-download-footer-widget, .social-media-widget { position: relative; bottom: 0; left: 0; right: 0; margin-top: 20px; justify-content: center; }
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 5px 15px; }
+            .main-menu { display: none; }
+            .center-spotlight-card { width: 300px; height: 360px; }
+            .tlc-about-block { padding: 30px 25px; }
+            .slider-row-header { padding: 0 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BACKGROUND CAROUSEL IMAGE SLIDESHOW SLOTS -->
+    <div class="carousel-bg-wrapper">
+        <div class="slide-bg active" style="background-image: url('tlc gradient.png');"></div>
+        <div class="slide-bg" style="background-image: url('backgroung1.png');"></div>
+        <div class="slide-bg" style="background-image: url('bg2.png');"></div>
+    </div>
+
+    <!-- HEADER NAVIGATION INTERFACE -->
+    <header>
+        <div class="nav-left">
+            <a href="#" class="brand-logo"><img width="150px" src="tlclogo.png"/><span></span></a>
+            <ul class="main-menu">
+                <li><a href="#" class="active">Home</a></li>
+                <li><a href="#web-dev">Web Solutions</a></li>
+                <li><a href="#other-services">Capabilities</a></li>
+                <li><a href="#about-collective">About Collective</a></li>
+            </ul>
+        </div>
+        <div class="nav-right">
+            <button class="nav-icon">🔔</button>
+            <button class="nav-icon">🔍</button>
+            <div class="user-meta">
+                <div><strong>Teta Kollie</strong><br><span style="color:var(--text-muted);">123456789</span></div>
+                <div class="user-avatar"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO DISPLAY STAGE -->
+    <section class="hero-banner">
+        
+        <div class="stage-3d-container">
+            <button class="stage-arrow stage-arrow-left" onclick="shiftStage(-1)">‹</button>
+            
+            <!-- LEFT SKEWED PERSPECTIVE COMPONENT LAYER -->
+            <div class="deck-wing deck-wing-left">
+                <div class="showcase-card">
+                    <img src="graphic-design.png" alt="Graphic Design Frameworks">
+                    <div class="wing-label">Graphic Design</div>
+                </div>
+                <div class="showcase-card">
+                    <img src="𝐀𝐮𝐭𝐨𝐂𝐀𝐃 𝐀𝐫𝐜𝐡𝐢𝐭𝐞𝐜𝐭𝐮𝐫𝐞 𝟐𝐃 & 𝟑𝐃.jfif" alt="AutoCAD Blueprints">
+                    <div class="wing-label">AutoCAD Systems</div>
+                </div>
+            </div>
+
+            <!-- CENTER FOCUS SPOTLIGHT MATRIX CARD -->
+            <div class="center-spotlight-card">
+                <img id="spotlightImage" src="web dev.png" alt="Core Platform Focus">
+                <div class="spotlight-overlay"></div>
+                <div class="spotlight-info-payload">
+                    <div class="meta-badge-row">
+                        
+                        
+                    </div>
+                    <h2 id="spotlightTitle">Web Development</h2>
+                    <p id="spotlightTagline">(2026) Fullstack, Enterprise SaaS, React, Node Systems</p>
+                    <div class="spotlight-actions">
+                        <button class="action-btn btn-watch" onclick="engageTlcChannel()">▶ Hire TLC</button>
+                        <button class="action-btn btn-list" onclick="alert('Added to Consultation Brief queue.')">＋ Join TLC</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT SKEWED PERSPECTIVE COMPONENT LAYER -->
+            <div class="deck-wing deck-wing-right">
+                <div class="showcase-card">
+                    <img src="software development.jfif" alt="Software Engineering Buildout">
+                    <div class="wing-label">Software Dev</div>
+                </div>
+                <div class="showcase-card">
+                    <img src="fine art.jfif" alt="Fine Art Vectors">
+                    <div class="wing-label">Fine Art Designs</div>
+                </div>
+            </div>
+
+            <button class="stage-arrow stage-arrow-right" onclick="shiftStage(1)">›</button>
+        </div>
+
+        <!-- SEARCH FILTRATION INPUT COMPONENT CONSOLE -->
+        <div class="dashboard-control-deck">
+            <div class="search-input-container">
+                <input type="text" placeholder="SEARCH SERVICE BY NAME OR CATEGORY STRATEGIES" id="searchConsole">
+                <button class="search-action-trigger" onclick="alert('Searching pipeline repositories for matching service parameters...')">SEARCH</button>
+            </div>
+            <p class="search-subtext-tags">Web Architecture, Software Frameworks, AutoCAD Systems, Fine Arts UI, Desktop Publishing</p>
+        </div>
+
+        <!-- EXTERNAL DOWNLOAD REPLICAS -->
+        <div class="app-download-footer-widget">
+            <span>🍎 Android Portal</span>
+            <span>🤖 iOS Portal</span>
+            <span>Download TLC Network deployment manifests today!</span>
+        </div>
+
+        <!-- SOCIAL LINK REPLICAS -->
+        <div class="social-media-widget">
+            <span>follow us on social media</span>
+            <span>f</span><span>𝕏</span><span>yt</span><span>in</span>
+        </div>
+
+    </section>
+
+    <!-- INFINITE SCROLLING CONTINUOUS SCROLLER SYSTEM ROW -->
+    <section class="infinite-slider-row-wrapper" id="other-services">
+        <div class="slider-row-header">
+            <p>TOTAL CAPABILITIES DEPLOYED IN QUEUE</p>
+            <h3>Continue Watching: Core Competencies Matrix</h3>
+        </div>
+
+        <div class="infinite-carousel-container">
+            <!-- Track loop is duplicated internally via script for seamless endless marquee execution -->
+            <div class="infinite-track-loop" id="masterInfiniteLoopTrack">
+                
+                <div class="loop-card" onclick="pivotSpotlight('Web Architecture', 'Fullstack, Enterprise SaaS, React, Node Systems', 'https://images.unsplash.com/photo-1547658719-da2b81166b58?q=80&w=600&auto=format&fit=crop')">
+                    <img src="https://images.unsplash.com/photo-1547658719-da2b81166b58?q=80&w=500&auto=format&fit=crop" alt="Web Systems">
+                    <div class="loop-card-meta"><h4>Custom Web Apps</h4><p>Season 1: Core Focus</p></div>
+                </div>
+                
+                <div class="loop-card" onclick="pivotSpotlight('Software Systems', 'Cloud Systems, Automation Scripts, Heavy Databases', 'https://images.unsplash.com/photo-1605379399642-870262d3d051?q=80&w=600&auto=format&fit=crop')">
+                    <img src="software development.jfif" alt="Software Engineering">
+                    <div class="loop-card-meta"><h4>Software Pipelines</h4><p>Season 1: Deep Tech</p></div>
+                </div>
+
+                <div class="loop-card" onclick="pivotSpotlight('AutoCAD Systems', 'High-Precision Drafts, Architectural BIM Frameworks', 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=600&auto=format&fit=crop')">
+                    <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=500&auto=format&fit=crop" alt="AutoCAD Projects">
+                    <div class="loop-card-meta"><h4>AutoCAD Layouts</h4><p>Season 2: Schematics</p></div>
+                </div>
+
+                <div class="loop-card" onclick="pivotSpotlight('Graphic Design', 'Corporate Identities, Brand Kits, High Fidelity UI UX', 'https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=600&auto=format&fit=crop')">
+                    <img src="https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=500&auto=format&fit=crop" alt="Creative Interface Design">
+                    <div class="loop-card-meta"><h4>UI & Graphic Design</h4><p>Season 1: Brand System</p></div>
+                </div>
+
+                <div class="loop-card" onclick="pivotSpotlight('Desktop Publishing', 'Interactive Catalogs, Volume Multi-Page Print Assembly', 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?q=80&w=600&auto=format&fit=crop')">
+                    <img src="https://images.unsplash.com/photo-1586075010923-2dd4570fb338?q=80&w=500&auto=format&fit=crop" alt="Publishing Design">
+                    <div class="loop-card-meta"><h4>Desktop Publishing</h4><p>Season 3: Layout Media</p></div>
+                </div>
+
+                <div class="loop-card" onclick="pivotSpotlight('Fine Art Vectors', 'Custom Corporate Artwork, Vector Illustrative Canvases', 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=600&auto=format&fit=crop')">
+                    <img src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=500&auto=format&fit=crop" alt="Fine Art Execution">
+                    <div class="loop-card-meta"><h4>Fine Art Integration</h4><p>Season 1: Vector Custom</p></div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- INFORMATION ABOUT REGISTRATION FRAMEWORK -->
+    <section class="tlc-about-block" id="about-collective">
+        <div class="about-grid-frame">
+            <div class="about-text-deck">
+                <h2>The Liberian Cooperation of Freelancers (TLC)</h2>
+                <p>We are an enterprise consortium of certified technical architects, engineers, and high-profile multimedia veterans. By day, our personnel operate within tier-one corporate operations and global institutions. Through the TLC model, we deliver uncompromised project development velocity directly to companies on an elite independent freelance schedule.</p>
+                <p>From advanced custom reactive application codebases down to precision engineering schematic models, our collaborative model matches industry criteria frameworks on every delivery node.</p>
+            </div>
+            
+            <div class="about-text-deck">
+                <div class="process-pipeline-block">
+                    <h4>Production Deployment Methodology</h4>
+                    <ul>
+                        <li><strong>Requirements Matrix Compilation:</strong> We structure scale criteria and constraints completely before code initialization.</li>
+                        <li><strong>High Fidelity Prototyping:</strong> Interactive structural wireframe templates map operational interfaces natively.</li>
+                        <li><strong>Clean Code Development:</strong> Our collective builds performance-optimized, stable architectures.</li>
+                        <li><strong>Cloud Rollout Monitoring:</strong> Fully automated test verification protocols protect edge delivery parameters.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AUTOMATION CONTROLLER SCRIPT LAYER -->
+    <script>
+        // Background Image Slideshow Automatic Rotation Engine
+        const backgroundSlides = document.querySelectorAll('.slide-bg');
+        let currentBgIndex = 0;
+
+        function cycleBackgrounds() {
+            backgroundSlides[currentBgIndex].classList.remove('active');
+            currentBgIndex = (currentBgIndex + 1) % backgroundSlides.length;
+            backgroundSlides[currentBgIndex].classList.add('active');
+        }
+        setInterval(cycleBackgrounds, 6000); // Transitions background slide matrices every 6 seconds
+
+        // Dynamic Interactive Spotlight Matrix State Replacer
+        function pivotSpotlight(title, tagline, imgUrl) {
+            document.getElementById('spotlightTitle').innerText = title;
+            document.getElementById('spotlightTagline').innerText = tagline;
+            document.getElementById('spotlightImage').src = imgUrl;
+        }
+
+        // Mock Interactive Navigation System controls
+        function engageTlcChannel() {
+            alert("Connecting request pipeline to a senior TLC Tech Partner for immediate consultation discovery.");
+        }
+
+        // Seamless Infinite Loop Duplicator Mechanics
+        const track = document.getElementById('masterInfiniteLoopTrack');
+        const items = Array.from(track.children);
+        // Duplicate content nodes to build continuous infinite carousel architecture flow
+        items.forEach(item => {
+            const clone = item.cloneNode(true);
+            track.appendChild(clone);
+        });
+
+        // Interactive Left & Right Wing Selector Simulation Toggle Actions
+        const spotlightData = [
+            { title: "Web Architecture", desc: "(2026) Fullstack, Enterprise SaaS, React, Node Systems", img: "https://images.unsplash.com/photo-1547658719-da2b81166b58?q=80&w=600&auto=format&fit=crop" },
+            { title: "AutoCAD Systems", desc: "High-Precision Drafts, Architectural BIM Frameworks", img: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=600&auto=format&fit=crop" },
+            { title: "Software Pipelines", desc: "Cloud Systems, Automation Scripts, Heavy Databases", img: "https://images.unsplash.com/photo-1605379399642-870262d3d051?q=80&w=600&auto=format&fit=crop" },
+            { title: "UI & Graphic Design", desc: "Corporate Identities, Brand Kits, High Fidelity UI UX", img: "https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=600&auto=format&fit=crop" }
+        ];
+        let dataIndex = 0;
+
+        function shiftStage(direction) {
+            dataIndex = (dataIndex + direction + spotlightData.length) % spotlightData.length;
+            const chosen = spotlightData[dataIndex];
+            pivotSpotlight(chosen.title, chosen.desc, chosen.img);
+        }
+    </script>
+</body>
+</html>
