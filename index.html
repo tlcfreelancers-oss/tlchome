@@ -1010,7 +1010,7 @@ select.form-input option{background:var(--navy-deep);}
                 <div style="margin-top:24px;">
                     <h5 style="margin-bottom:10px;">Contact</h5>
                     <p style="font-size:.78rem;color:var(--muted);line-height:2;">
-                        <i class="fa fa-envelope" style="color:var(--blue-bright);margin-right:6px;"></i>info@tlcfreelancers.com<br>
+                        <i class="fa fa-envelope" style="color:var(--blue-bright);margin-right:6px;"></i>tlcfreelancers@gmail.com<br>
                         <i class="fa fa-phone" style="color:var(--blue-bright);margin-right:6px;"></i>+231 XXX XXX XXX<br>
                         <i class="fa fa-map-marker-alt" style="color:var(--red);margin-right:6px;"></i>Monrovia, Liberia
                     </p>
@@ -1280,7 +1280,7 @@ select.form-input option{background:var(--navy-deep);}
 
 
 <!-- CONTACT DRAWER -->
-<div class="drawer" id="drawer">
+<!--<div class="drawer" id="drawer">
     <div class="drawer-glass">
         <h3>Quick Message</h3>
         <p>We respond within 24 hours.</p>
@@ -1292,6 +1292,63 @@ select.form-input option{background:var(--navy-deep);}
         <button class="cancel" onclick="closeDrawer()">Cancel</button>
     </div>
 </div>
+    -->
+    <!---form submit for product-->
+
+    <form action="https://formsubmit.co/8d014c0fb2477699dc6204b5c9b382c4" method="POST">
+
+    <input type="hidden" name="_subject" value="New TLC Quick Message">
+    <input type="hidden" name="_captcha" value="false">
+
+    <input type="hidden"
+           name="_next"
+           value="https://YOUR-USERNAME.github.io/thank-you.html">
+
+    <div class="drawer" id="drawer">
+        <div class="drawer-glass">
+
+            <h3>Quick Message</h3>
+            <p>We respond within 24 hours.</p>
+
+            <input id="pid"
+                   name="service_type"
+                   class="field"
+                   readonly
+                   placeholder="Service / Request Type">
+
+            <input class="field"
+                   id="dname"
+                   name="full_name"
+                   placeholder="Full Name"
+                   required>
+
+            <input class="field"
+                   id="demail"
+                   name="email"
+                   type="email"
+                   placeholder="Work Email"
+                   required>
+
+            <textarea class="field"
+                      id="dmsg"
+                      name="message"
+                      placeholder="Tell us about your project…"
+                      required></textarea>
+
+            <button type="submit" class="send">
+                Send Message →
+            </button>
+
+            <button type="button"
+                    class="cancel"
+                    onclick="closeDrawer()">
+                Cancel
+            </button>
+
+        </div>
+    </div>
+
+</form>
 
 <!-- Mobile overlay backdrop -->
 <div id="menuOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:480;" onclick="closeMobileMenu()"></div>
