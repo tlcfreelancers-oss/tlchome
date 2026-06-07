@@ -1487,7 +1487,7 @@ function handleNewsletter(){
     document.getElementById('nlEmail').value='';
 }
 
-/* ---- CONTACT FORM ---- */
+/* ---- CONTACT FORM ---- 
 function toggleChip(el){el.classList.toggle('selected');}
 function submitContactForm(){
     const fname=document.getElementById('cf_fname').value.trim();
@@ -1499,6 +1499,18 @@ function submitContactForm(){
     document.getElementById('formWrap').style.display='none';
     document.getElementById('formSuccess').classList.add('shown');
     window.scrollTo({top:document.getElementById('contact-page').offsetTop,behavior:'smooth'});
+} */
+    /*----my code added for services ---*/
+    function toggleChip(chip) {
+    chip.classList.toggle('active');
+
+    const selected = [];
+
+    document.querySelectorAll('.chip.active').forEach(item => {
+        selected.push(item.textContent.trim());
+    });
+
+    document.getElementById('selectedServices').value = selected.join(', ');
 }
 function resetForm(){
     document.getElementById('formWrap').style.display='block';
