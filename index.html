@@ -386,6 +386,7 @@ select.form-input option{background:var(--navy-deep);}
 .chip{padding:7px 14px;border-radius:6px;border:1px solid var(--border);background:var(--surface3);color:var(--muted-lt);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;}
 .chip:hover{border-color:var(--blue-bright);color:var(--white);}
 .chip.selected{background:var(--grad-blue);border-color:var(--blue);color:#fff;}
+.chip.active{background:var(--grad-blue);border-color:var(--blue);color:#fff;}
 .form-submit{width:100%;padding:14px;background:var(--grad-blue);border:none;border-radius:8px;color:#fff;font-size:.9rem;font-weight:700;font-family:var(--font-body);letter-spacing:.06em;cursor:pointer;box-shadow:0 8px 28px rgba(30,79,196,0.4);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:6px;}
 .form-submit:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(30,79,196,0.6);}
 .contact-offices{width:90%;margin:0 auto 80px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;}
@@ -1502,7 +1503,7 @@ function submitContactForm(){
 } */
     /*----my code added for services ---*/
     function toggleChip(chip) {
-    chip.classList.toggle('selected');
+    chip.classList.toggle('active');
 
     const selected = [];
 
