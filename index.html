@@ -1100,25 +1100,83 @@ select.form-input option{background:var(--navy-deep);}
             </div>
         </div>
     </div>
-   <form  action="https://formsubmit.co/8d014c0fb2477699dc6204b5c9b382c4" method="POST">
+   <form action="https://formsubmit.co/8d014c0fb2477699dc6204b5c9b382c4" method="POST">
+
+    <!-- FormSubmit Settings -->
+    <input type="hidden" name="_subject" value="New TLC Website Inquiry">
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_template" value="table">
+
+    <!-- Selected Services -->
+    <input type="hidden" name="services" id="selectedServices">
+
     <div class="contact-form-card">
+
         <div id="formWrap">
+
             <div class="cf-head">
                 <h3>SEND A MESSAGE</h3>
                 <p>Fill in the details below — we'll get back to you within 24 hours.</p>
             </div>
+
             <div class="form-row">
-                <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" id="cf_fname" placeholder="John"></div>
-                <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" id="cf_lname" placeholder="Doe"></div>
+                <div class="form-group">
+                    <label class="form-label">First Name</label>
+                    <input type="text"
+                           class="form-input"
+                           id="cf_fname"
+                           name="first_name"
+                           placeholder="John"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Last Name</label>
+                    <input type="text"
+                           class="form-input"
+                           id="cf_lname"
+                           name="last_name"
+                           placeholder="Doe"
+                           required>
+                </div>
             </div>
+
             <div class="form-row">
-                <div class="form-group"><label class="form-label">Work Email</label><input type="email" class="form-input" id="cf_email" placeholder="you@company.com"></div>
-                <div class="form-group"><label class="form-label">Phone Number</label><input type="tel" class="form-input" id="cf_phone" placeholder="+231 700 000 000"></div>
+                <div class="form-group">
+                    <label class="form-label">Work Email</label>
+                    <input type="email"
+                           class="form-input"
+                           id="cf_email"
+                           name="email"
+                           placeholder="you@company.com"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel"
+                           class="form-input"
+                           id="cf_phone"
+                           name="phone"
+                           placeholder="+231 700 000 000">
+                </div>
             </div>
-            <div class="form-group"><label class="form-label">Company / Organization</label><input type="text" class="form-input" id="cf_company" placeholder="Your Company Name"></div>
+
+            <div class="form-group">
+                <label class="form-label">Company / Organization</label>
+                <input type="text"
+                       class="form-input"
+                       id="cf_company"
+                       name="company"
+                       placeholder="Your Company Name">
+            </div>
+
             <div class="form-group">
                 <label class="form-label">Nature of Inquiry</label>
-                <select class="form-input" id="cf_type">
+                <select class="form-input"
+                        id="cf_type"
+                        name="inquiry_type"
+                        required>
                     <option value="" disabled selected>Select inquiry type…</option>
                     <option value="hire">Hire TLC for a Project</option>
                     <option value="join">Join TLC as a Freelancer</option>
@@ -1127,8 +1185,15 @@ select.form-input option{background:var(--navy-deep);}
                     <option value="other">General Inquiry</option>
                 </select>
             </div>
+
             <div class="form-group">
-                <label class="form-label">Services Needed <span style="color:var(--muted);font-size:.65rem;">(select all that apply)</span></label>
+                <label class="form-label">
+                    Services Needed
+                    <span style="color:var(--muted);font-size:.65rem;">
+                        (select all that apply)
+                    </span>
+                </label>
+
                 <div class="service-chips">
                     <span class="chip" onclick="toggleChip(this)">Web Development</span>
                     <span class="chip" onclick="toggleChip(this)">Mobile Apps</span>
@@ -1141,9 +1206,12 @@ select.form-input option{background:var(--navy-deep);}
                     <span class="chip" onclick="toggleChip(this)">Branding</span>
                 </div>
             </div>
+
             <div class="form-group">
                 <label class="form-label">Estimated Budget</label>
-                <select class="form-input" id="cf_budget">
+                <select class="form-input"
+                        id="cf_budget"
+                        name="budget">
                     <option value="" disabled selected>Select a budget range…</option>
                     <option>Under $500</option>
                     <option>$500 – $2,000</option>
@@ -1153,18 +1221,44 @@ select.form-input option{background:var(--navy-deep);}
                     <option>Let's discuss</option>
                 </select>
             </div>
-            <div class="form-group"><label class="form-label">Project Description</label><textarea class="form-input" id="cf_msg" placeholder="Tell us about your project, timeline, and any specific requirements…"></textarea></div>
-            <button class="form-submit" onclick="submitContactForm()"><i class="fa fa-paper-plane"></i>Send Message to TLC</button>
+
+            <div class="form-group">
+                <label class="form-label">Project Description</label>
+                <textarea class="form-input"
+                          id="cf_msg"
+                          name="message"
+                          placeholder="Tell us about your project, timeline, and any specific requirements…"
+                          rows="5"
+                          required></textarea>
+            </div>
+
+            <button type="submit" class="form-submit">
+                <i class="fa fa-paper-plane"></i>
+                Send Message to TLC
+            </button>
+
         </div>
+
         <div class="form-success" id="formSuccess">
             <div class="success-icon">✓</div>
             <h3>MESSAGE SENT!</h3>
-            <p>Thank you for reaching out. A senior TLC representative will contact you within <strong>24 hours</strong>.</p>
+            <p>
+                Thank you for reaching out. A senior TLC representative
+                will contact you within <strong>24 hours</strong>.
+            </p>
+
             <br>
-            <button class="form-submit" onclick="resetForm()" style="width:auto;padding:12px 28px;display:inline-flex;">Send Another Message</button>
+
+            <button class="form-submit"
+                    onclick="resetForm()"
+                    style="width:auto;padding:12px 28px;display:inline-flex;">
+                Send Another Message
+            </button>
         </div>
+
     </div>
-   </form>
+
+</form>
 </div>
 
 <div style="width:90%;margin:0 auto 20px;">
