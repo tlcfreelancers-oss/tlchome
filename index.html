@@ -3,814 +3,1909 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TLC Freelancers - Premier Web & Technical Engineering Collective</title>
-    <style>
-        /* --- CONFIGURATION & DESIGN TOKENS --- */
-        :root {
-            --netflix-red: #E50914;
-            --netflix-red-hover: #C11119;
-            --netflix-yellow: #E5B009;
-            --bg-dark: #0a0a0c;
-            --bg-card: #141414;
-            --text-main: #FFFFFF;
-            --text-muted: #808080;
-            --font-base: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: var(--font-base);
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* --- STICKY NAVIGATION BAR --- */
-        header {
-            position: sticky;
-            top: 0;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 60px;
-            z-index: 100;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
-           
-        }
-
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 40px;
-        }
-
-        .brand-logo {
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--netflix-red);
-            text-decoration: none;
-            line-height: 1;
-        }
-        
-        .brand-logo span {
-            display: block;
-            font-size: 0.55rem;
-            color: var(--text-main);
-            letter-spacing: 1px;
-            font-weight: 400;
-            margin-top: 2px;
-        }
-
-        .main-menu {
-            display: flex;
-            gap: 18px;
-            list-style: none;
-        }
-
-        .main-menu a {
-            color: #e5e5e5;
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .main-menu a:hover, .main-menu a.active {
-            color: var(--netflix-red);
-        }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .nav-icon {
-            color: var(--text-main);
-            background: none;
-            border: none;
-            font-size: 1.1rem;
-            cursor: pointer;
-        }
-
-        .user-meta {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.75rem;
-            text-align: right;
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 4px;
-            background: #2b70e4;
-            display: inline-block;
-        }
-
-        /* --- HERO BANNER & SLIDESHOW CAROUSEL --- */
-        .hero-banner {
-            position: relative;
-            width: 100%;
-            height: 90vh;
-            min-height: 400px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        /* Continuous Background Carousel Slide Mechanics */
-        .carousel-bg-wrapper {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-
-        .slide-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out;
-            transform: scale(1.05);
-        }
-
-        .slide-bg.active {
-            opacity: 0.25; /* Maintains uniform dark mood visibility */
-            transform: scale(1);
-            transition: opacity 1.5s ease-in-out, transform 8s linear;
-        }
-
-        /* --- 3D SKEWED STAGE DISPLAY VIEW --- */
-        .stage-3d-container {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            max-width: 1300px;
-            margin: 40px auto 0 auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            perspective: 1200px;
-            padding: 0 40px;
-        }
-
-        .stage-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            border: none;
-            color: #fff;
-            font-size: 1.2rem;
-            cursor: pointer;
-            z-index: 40;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .stage-arrow-left { left: 20px; }
-        .stage-arrow-right { right: 20px; }
-
-        .deck-wing {
-            flex: 1;
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            align-items: center;
-            transition: transform 0.5s ease;
-        }
-
-        .deck-wing-left {
-            transform: rotateY(35deg) translateZ(-50px);
-        }
-
-        .deck-wing-right {
-            transform: rotateY(-35deg) translateZ(-50px);
-        }
-
-        /* Dynamic Showcase Cards */
-        .showcase-card {
-            width: 180px;
-            height: 270px;
-            border-radius: 4px;
-            overflow: hidden;
-            box-shadow: -5px 15px 30px rgba(0,0,0,0.8);
-            border: 1px solid rgba(255,255,255,0.05);
-            background: var(--bg-card);
-            position: relative;
-            flex-shrink: 0;
-            transition: transform 0.3s;
-        }
-
-        .showcase-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .showcase-card .wing-label {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
-            padding: 15px 10px;
-            text-align: center;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-
-        /* Centered Hero Spotlight Showcase Card */
-        .center-spotlight-card {
-            width: 360px;
-            height: 400px;
-            background: var(--bg-card);
-            border-radius: 6px;
-            box-shadow: 0px 20px 40px rgba(0,0,0,0.9);
-            position: relative;
-            z-index: 30;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
-            transform: translateZ(50px);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-        }
-
-        .center-spotlight-card img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 1;
-        }
-
-        .spotlight-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to top, rgba(10,10,12,1) 0%, rgba(10,10,12,0.6) 50%, rgba(0,0,0,0.2) 100%);
-            z-index: 2;
-        }
-
-        .spotlight-info-payload {
-            position: relative;
-            z-index: 3;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .meta-badge-row {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-            font-size: 0.75rem;
-            color: #dcdcdc;
-        }
-
-        .top-badge {
-            background-color: var(--netflix-yellow);
-            color: #000;
-            font-weight: 900;
-            padding: 1px 5px;
-            border-radius: 3px;
-            font-size: 0.7rem;
-        }
-
-        .rating-star {
-            color: var(--netflix-yellow);
-            font-weight: 700;
-        }
-
-        .spotlight-info-payload h2 {
-            font-size: 2.2rem;
-            font-weight: 900;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-            line-height: 1.1;
-        }
-
-        .spotlight-info-payload p {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .spotlight-actions {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .action-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 10px 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
-
-        .btn-watch { background-color: var(--netflix-red); color: #fff; }
-        .btn-list { background-color: var(--netflix-yellow); color: #000; }
-
-        /* --- INTERACTIVE SEARCH CONTROL DASHBOARD --- */
-        .dashboard-control-deck {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            max-width: 520px;
-            margin: 40px auto 0 auto;
-            text-align: center;
-        }
-
-        .search-input-container {
-            display: flex;
-            border: 1px solid #333;
-            background: rgba(0,0,0,0.85);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .search-input-container input {
-            flex-grow: 1;
-            height: 44px;
-            background: transparent;
-            border: none;
-            padding: 0 16px;
-            color: #fff;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            outline: none;
-        }
-
-        .search-action-trigger {
-            background: white;
-            border: none;
-            color: var(--netflix-red);
-            font-weight: 700;
-            font-size: 0.8rem;
-            padding: 0 20px;
-            cursor: pointer;
-            letter-spacing: 1px;
-        }
-
-        .search-subtext-tags {
-            font-size: 0.75rem;
-            color: #55555c;
-            margin-top: 10px;
-            word-spacing: 2px;
-        }
-
-        .app-download-footer-widget {
-            position: absolute;
-            bottom: 30px;
-            left: 60px;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .social-media-widget {
-            position: absolute;
-            bottom: 30px;
-            right: 60px;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        /* --- CONTINUOUS INFINITE SCROLLER ROW --- */
-        .infinite-slider-row-wrapper {
-            background-color: var(--bg-dark);
-            padding: 40px 0;
-            position: relative;
-        }
-
-        .slider-row-header {
-            max-width: 1400px;
-            margin: 0 auto 15px auto;
-            padding: 0 60px;
-        }
-
-        .slider-row-header p {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 2px;
-        }
-
-        .slider-row-header h3 {
-            font-size: 1.25rem;
-            font-weight: 500;
-            color: #e5e5e5;
-        }
-
-        /* Infinite CSS Scrolling System Track Animation */
-        .infinite-carousel-container {
-            width: 100%;
-            overflow: hidden;
-            position: relative;
-            display: flex;
-        }
-
-        .infinite-track-loop {
-            display: flex;
-            gap: 15px;
-            width: max-content;
-            animation: continuousMarqueeLoop 30s linear infinite;
-            padding: 10px 0;
-        }
-
-        /* Pause infinite animation track state when targeting item details */
-        .infinite-carousel-container:hover .infinite-track-loop {
-            animation-play-state: paused;
-        }
-
-        .loop-card {
-            width: 250px;
-            height: 140px;
-            background-color: var(--bg-card);
-            border-radius: 4px;
-            overflow: hidden;
-            position: relative;
-            cursor: pointer;
-            flex-shrink: 0;
-            border: 1px solid rgba(255,255,255,0.03);
-            transition: transform 0.3s, border-color 0.3s;
-        }
-
-        .loop-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .loop-card-meta {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            padding: 12px;
-        }
-
-        .loop-card-meta h4 { font-size: 0.85rem; margin-bottom: 2px; }
-        .loop-card-meta p { font-size: 0.7rem; color: var(--text-muted); }
-
-        .loop-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--netflix-red);
-        }
-
-        @keyframes continuousMarqueeLoop {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(calc(-50% - 7.5px)); }
-        }
-
-        /* --- ABOUT CORPORATE INFRASTRUCTURE LAYOUT --- */
-        .tlc-about-block {
-            max-width: 1400px;
-            margin: 40px auto;
-            padding: 60px;
-            border-top: 1px solid #1a1a1f;
-        }
-
-        .about-grid-frame {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-        }
-
-        .about-text-deck h2 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--text-main);
-        }
-
-        .about-text-deck p {
-            font-size: 1.05rem;
-            line-height: 1.6;
-            color: #a2a2ad;
-            margin-bottom: 15px;
-        }
-
-        .process-pipeline-block {
-            background-color: var(--bg-card);
-            padding: 30px;
-            border-left: 4px solid var(--netflix-red);
-            border-radius: 4px;
-        }
-
-        .process-pipeline-block h4 {
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-            color: #fff;
-        }
-
-        .process-pipeline-block ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .process-pipeline-block li {
-            font-size: 0.9rem;
-            margin-bottom: 8px;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .process-pipeline-block li::before {
-            content: "✓";
-            color: var(--netflix-red);
-            font-weight: bold;
-        }
-
-        /* --- RESPONSIVE MEDIA BREAKPOINTS --- */
-        @media (max-width: 1024px) {
-            .deck-wing { display: none; }
-            .about-grid-frame { grid-template-columns: 1fr; gap: 30px; }
-            .hero-banner { height: auto; padding: 120px 0 60px 0; }
-            .app-download-footer-widget, .social-media-widget { position: relative; bottom: 0; left: 0; right: 0; margin-top: 20px; justify-content: center; }
-        }
-
-        @media (max-width: 768px) {
-            header { padding: 5px 15px; }
-            .main-menu { display: none; }
-            .center-spotlight-card { width: 300px; height: 360px; }
-            .tlc-about-block { padding: 30px 25px; }
-            .slider-row-header { padding: 0 25px; }
-        }
-    </style>
+    <title>TLC Freelancers — The Liberian Cooperation of Freelancers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* =============================================
+   TLC FREELANCERS — BRAND DESIGN SYSTEM 2026
+   Primary: Navy #0D1B3E  Blue #1E4FC4  Red #CC1F1F
+   Accent:  Gold #C8941A  LightBlue #3B82F6
+============================================= */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+    /* === BRAND CORE === */
+    --navy:       #0D1B3E;
+    --navy-deep:  #080F24;
+    --navy-mid:   #0F2047;
+    --navy-light: #162454;
+    --blue:       #1E4FC4;
+    --blue-bright:#3B82F6;
+    --blue-glow:  rgba(30,79,196,0.35);
+    --red:        #CC1F1F;
+    --red-bright: #E53935;
+    --red-dk:     #9e1515;
+    --gold:       #C8941A;
+    --gold-lt:    #E8B44A;
+    --gold-pale:  rgba(200,148,26,0.15);
+    --white:      #FFFFFF;
+    --off-white:  #E8EDF8;
+    --muted:      #7B8DB8;
+    --muted-lt:   #A8B8DC;
+
+    /* === SURFACES === */
+    --bg:         #080F24;
+    --surface1:   rgba(14,33,87,0.5);
+    --surface2:   rgba(30,55,120,0.3);
+    --surface3:   rgba(255,255,255,0.04);
+    --glass:      rgba(12,24,65,0.85);
+    --border:     rgba(59,130,246,0.18);
+    --border-bright: rgba(59,130,246,0.4);
+
+    /* === GRADIENTS === */
+    --grad-brand: linear-gradient(135deg, #1E4FC4 0%, #0D1B3E 50%, #CC1F1F 100%);
+    --grad-navy:  linear-gradient(160deg, #162454 0%, #080F24 60%, #0F2047 100%);
+    --grad-panel: linear-gradient(160deg, #1a3a8f 0%, #0d1b3e 50%, #0f1e60 100%);
+    --grad-red:   linear-gradient(135deg, #CC1F1F 0%, #8B1010 100%);
+    --grad-blue:  linear-gradient(135deg, #1E4FC4 0%, #0D1B3E 100%);
+    --grad-gold:  linear-gradient(135deg, #C8941A 0%, #E8B44A 100%);
+
+    /* === TYPE === */
+    --font-head: 'Bebas Neue', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+}
+
+html{scroll-behavior:smooth;}
+body{
+    background:var(--bg);
+    background-image:
+        radial-gradient(ellipse 80% 60% at 10% 20%, rgba(30,79,196,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 90% 80%, rgba(204,31,31,0.06) 0%, transparent 60%);
+    color:var(--white);
+    font-family:var(--font-body);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+}
+
+/* Noise grain overlay */
+body::before{
+    content:'';position:fixed;inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events:none;z-index:9999;opacity:.5;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--navy-deep);}
+::-webkit-scrollbar-thumb{background:var(--blue);border-radius:2px;}
+
+/* ============ HEADER ============ */
+header{
+    position:sticky;top:0;left:0;width:100%;z-index:500;
+    background:rgba(8,15,36,0.94);
+    backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border);
+}
+.wrap{width:90%;margin:0 auto;}
+
+.nav-top{
+    height:66px;display:flex;align-items:center;
+    justify-content:space-between;
+}
+
+/* LOGO */
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo-img{
+    height:42px;
+    filter: drop-shadow(0 0 8px rgba(30,79,196,0.4));
+}
+.nav-logo-fallback{
+    display:flex;align-items:center;gap:0;
+    font-family:var(--font-head);line-height:1;
+}
+.nav-logo-fallback .tlc{
+    font-size:2rem;
+    background:linear-gradient(135deg,var(--blue) 0%,var(--blue-bright) 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    letter-spacing:.06em;
+}
+.nav-logo-fallback .star{
+    font-size:.9rem;color:var(--red);
+    margin:0 4px;transform:translateY(-4px);
+}
+.nav-logo-fallback .free{
+    font-size:2rem;color:var(--red);letter-spacing:.04em;
+}
+
+.nav-actions{display:flex;align-items:center;gap:.5rem;}
+.nav-icon{
+    background:none;border:1px solid var(--border);
+    color:var(--blue-bright);cursor:pointer;
+    padding:.4rem .55rem;border-radius:6px;
+    display:flex;align-items:center;
+    transition:all .2s;font-size:.95rem;
+}
+.nav-icon:hover{border-color:var(--blue-bright);background:rgba(59,130,246,0.12);}
+.nav-cta{
+    background:var(--grad-red);color:#fff;
+    border:none;border-radius:6px;
+    padding:.5rem 1.25rem;font-size:.8rem;
+    font-weight:700;cursor:pointer;
+    transition:all .2s;letter-spacing:.04em;
+    font-family:var(--font-body);
+    box-shadow:0 4px 16px rgba(204,31,31,0.3);
+}
+.nav-cta:hover{transform:scale(1.03);box-shadow:0 6px 24px rgba(204,31,31,0.5);}
+
+/* SUBNAV */
+.subnav{
+    display:flex;align-items:center;
+    border-top:1px solid var(--border);
+    height:44px;gap:2px;
+}
+.nav-item{position:relative;display:flex;align-items:center;}
+.nav-item>a{
+    color:var(--muted);text-decoration:none;
+    font-size:.8rem;font-weight:500;
+    padding:0 1rem;height:44px;
+    display:flex;align-items:center;
+    border-bottom:2px solid transparent;
+    transition:color .15s,border-color .15s;
+    white-space:nowrap;
+}
+.nav-item>a:hover,.nav-item:hover>a{color:var(--gold);border-bottom-color:var(--gold);}
+.nav-item>a.active{color:var(--blue-bright);border-bottom-color:var(--blue-bright);}
+
+/* Dropdowns */
+.drop{
+    position:absolute;top:calc(100% + 1px);left:0;
+    background:rgba(8,15,36,0.97);
+    border:1px solid var(--border);
+    border-top:2px solid var(--blue);
+    min-width:280px;z-index:9999;
+    opacity:0;transform:translateY(-8px);pointer-events:none;
+    transition:opacity .2s,transform .2s;
+    border-radius:0 0 10px 10px;
+    backdrop-filter:blur(24px);
+}
+.nav-item:hover .drop{opacity:1;transform:translateY(0);pointer-events:all;}
+.drop-wide{width:760px;}
+
+.drop-inner{display:flex;gap:1.5rem;padding:1.8rem;}
+.drop-left{flex:1;}
+.drop-title{
+    font-size:1.1rem;font-weight:700;color:var(--white);
+    margin-bottom:.25rem;font-family:var(--font-head);
+    letter-spacing:.05em;
+}
+.drop-sub{font-size:.75rem;color:var(--muted);margin-bottom:1.2rem;}
+.drop-cards{display:flex;gap:.7rem;margin-bottom:1rem;}
+.dc{
+    background:var(--surface1);
+    border:1px solid var(--border);
+    border-radius:8px;padding:.9rem;flex:1;
+    transition:border-color .2s,transform .2s;
+}
+.dc:hover{border-color:var(--blue-bright);transform:translateY(-2px);}
+.dc-ico{
+    width:34px;height:34px;
+    background:var(--grad-blue);
+    border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:.6rem;font-size:1rem;
+}
+.dc-title{color:var(--gold);font-size:.75rem;font-weight:700;margin-bottom:.3rem;}
+.dc-text{color:var(--muted);font-size:.7rem;line-height:1.5;}
+.drop-cta{
+    display:inline-flex;align-items:center;gap:.35rem;
+    background:var(--grad-blue);color:#fff;
+    border:none;border-radius:6px;
+    padding:.45rem 1.1rem;font-size:.78rem;font-weight:700;
+    cursor:pointer;text-decoration:none;
+    transition:opacity .2s;
+}
+.drop-cta:hover{opacity:.85;}
+.drop-right{
+    width:190px;flex-shrink:0;
+    border-radius:8px;overflow:hidden;
+    border:1px solid var(--border);
+}
+.drop-right img{width:100%;height:100%;object-fit:cover;display:block;}
+
+.drop-links{padding:.8rem 0;}
+.drop-links a{
+    display:flex;align-items:center;gap:.6rem;
+    padding:.5rem 1.2rem;color:var(--muted);
+    text-decoration:none;font-size:.8rem;
+    transition:color .15s,background .15s;
+}
+.drop-links a:hover{color:var(--gold);background:rgba(200,148,26,0.06);}
+.drop-links a i{font-size:.9rem;color:var(--blue-bright);}
+.dl-head{
+    padding:.4rem 1.2rem .2rem;
+    font-size:.65rem;font-weight:700;
+    color:var(--blue-bright);
+    letter-spacing:.12em;text-transform:uppercase;
+}
+.hr-drop{border:none;border-top:1px solid var(--border);margin:.3rem 0;}
+
+/* ============ HERO ============ */
+.hero{
+    position:relative;width:100%;min-height:92vh;
+    display:flex;flex-direction:column;
+    justify-content:center;align-items:center;
+    overflow:hidden;
+}
+
+/* Animated background mesh */
+.hero-mesh{
+    position:absolute;inset:0;z-index:0;
+    /*background:
+        radial-gradient(ellipse 70% 55% at 15% 45%, rgba(196, 163, 30, 0.14) 0%, transparent 60%),
+        radial-gradient(ellipse 55% 45% at 85% 25%, rgba(200,148,26,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 70% at 50% 105%, rgba(204,31,31,0.1) 0%, transparent 60%); */
+        background: black;
+}
+
+/* BG slides */
+.hero-bgs{position:absolute;inset:0;z-index:1;width:90%;margin:0 auto;left:5%;}
+.slide-bg{
+    position:absolute;inset:0;
+    background-size:cover;background-position:center;
+    opacity:0;transition:opacity 1.5s ease-in-out;transform:scale(1.04);
+}
+.slide-bg.active{opacity:.12;transform:scale(1);transition:opacity 1.5s,transform 8s linear;}
+
+/* Geometric star decoration */
+.hero-star-deco{
+    position:absolute;right:5%;top:15%;z-index:2;
+    width:160px;height:160px;
+    border:1px solid rgba(30,79,196,0.15);
+    transform:rotate(15deg);
+    border-radius:4px;
+    animation:starRotate 20s linear infinite;
+}
+.hero-star-deco::before{
+    content:'';position:absolute;inset:10px;
+    border:1px solid rgba(204,31,31,0.1);
+    transform:rotate(-30deg);
+    animation:starRotate 15s linear infinite reverse;
+}
+@keyframes starRotate{to{transform:rotate(375deg);}}
+
+/* Brand stripe */
+.hero-stripe{
+    position:absolute;left:0;top:0;bottom:0;
+    width:5px;z-index:3;
+    background:linear-gradient(to bottom,var(--blue) 0%,var(--red) 50%,var(--gold) 100%);
+}
+
+/* Hero content */
+.hero-content{
+    position:relative;z-index:10;
+    text-align:center;padding:0 20px;
+    width:100%;
+}
+
+.hero-kicker{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--surface1);
+    border:1px solid var(--border);
+    border-radius:30px;
+    padding:6px 16px;
+    font-size:.7rem;font-weight:700;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--blue-bright);
+    margin-bottom:20px;
+}
+.hero-kicker::before{
+    content:'';width:6px;height:6px;
+    border-radius:50%;background:var(--red);
+    animation:pulse 2s ease infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.5);}}
+
+.hero-h1{
+    font-family:var(--font-head);
+    font-size:clamp(3rem,8vw,7rem);
+    letter-spacing:.06em;line-height:.95;
+    margin-bottom:12px;
+}
+.hero-h1 .line1{
+    background:linear-gradient(90deg, var(--white) 0%, var(--off-white) 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    display:block;
+}
+.hero-h1 .line2{
+    background:linear-gradient(90deg, var(--blue-bright) 0%, var(--blue) 40%, var(--red) 80%, var(--red-bright) 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    display:block;
+}
+
+.hero-sub{
+    font-size:.85rem;color:var(--muted-lt);
+    letter-spacing:.14em;text-transform:uppercase;
+    margin-bottom:36px;
+}
+
+/* 3D Stage */
+.stage{
+    position:relative;z-index:10;
+    width:90%;max-width:1200px;
+    margin:0 auto;
+    display:flex;justify-content:center;align-items:center;
+    perspective:1200px;padding:0 60px;
+}
+.stage-arrow{
+    position:absolute;top:50%;transform:translateY(-50%);
+    width:44px;height:44px;
+    background:rgba(30,79,196,0.15);
+    border-radius:50%;
+    border:1px solid var(--border);
+    color:var(--blue-bright);font-size:1.4rem;
+    cursor:pointer;z-index:40;
+    display:flex;align-items:center;justify-content:center;
+    transition:all .2s;
+}
+.stage-arrow:hover{background:var(--blue);border-color:var(--blue);}
+.stage-arrow-left{left:10px;}
+.stage-arrow-right{right:10px;}
+
+.deck-wing{flex:1;display:flex;gap:14px;justify-content:center;align-items:center;transition:transform .5s;}
+.deck-wing-left{transform:rotateY(35deg) translateZ(-50px);}
+.deck-wing-right{transform:rotateY(-35deg) translateZ(-50px);}
+
+.wing-card{
+    width:172px;height:260px;border-radius:6px;overflow:hidden;
+    box-shadow:-5px 15px 40px rgba(0,0,0,.9);
+    border:1px solid rgba(59,130,246,0.1);
+    background:var(--surface1);position:relative;flex-shrink:0;
+}
+.wing-card img{width:100%;height:100%;object-fit:cover;}
+.wing-card .wlabel{
+    position:absolute;bottom:0;left:0;width:100%;
+    background:linear-gradient(to top,rgba(8,15,36,.97),transparent);
+    padding:18px 10px 10px;text-align:center;
+    font-size:.8rem;font-weight:600;
+}
+
+.spotlight{
+    width:340px;height:420px;
+    background:var(--surface1);
+    border-radius:8px;
+    box-shadow:0 30px 60px rgba(0,0,0,.95),0 0 40px rgba(30,79,196,0.15);
+    position:relative;z-index:30;overflow:hidden;
+    border:1px solid rgba(59,130,246,0.2);
+    transform:translateZ(50px);
+    display:flex;flex-direction:column;justify-content:flex-end;
+    transition:transform .4s;
+}
+.spotlight:hover{transform:translateZ(70px) scale(1.02);}
+.spotlight>img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:1;}
+.spot-overlay{
+    position:absolute;inset:0;
+    background:linear-gradient(to top,rgba(8,15,36,.98) 0%,rgba(8,15,36,.5) 50%,rgba(8,15,36,.1) 100%);
+    z-index:2;
+}
+.spot-info{position:relative;z-index:3;padding:26px;text-align:center;}
+.spot-info h2{
+    font-family:var(--font-head);font-size:2.5rem;
+    letter-spacing:.05em;margin-bottom:6px;line-height:1;
+    color:var(--white);
+}
+.spot-info p{font-size:.7rem;color:var(--muted-lt);margin-bottom:18px;letter-spacing:.05em;text-transform:uppercase;}
+.spot-btns{display:flex;justify-content:center;gap:10px;}
+.sp-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:9px 18px;font-size:.75rem;font-weight:700;
+    border-radius:6px;border:none;cursor:pointer;
+    text-transform:uppercase;letter-spacing:.06em;
+    font-family:var(--font-body);transition:all .15s;
+}
+.sp-btn:hover{transform:translateY(-2px);}
+.sp-hire{background:var(--grad-blue);color:#fff;box-shadow:0 4px 14px rgba(30,79,196,0.4);}
+.sp-join{background:var(--grad-gold);color:#000;box-shadow:0 4px 14px rgba(200,148,26,0.3);}
+
+/* Search */
+.hero-search{
+    position:relative;z-index:10;
+    width:90%;max-width:560px;
+    margin:32px auto 0;
+}
+.search-bar{
+    display:flex;
+    border:1px solid rgba(59,130,246,0.3);
+    background:rgba(8,15,36,0.8);
+    border-radius:6px;overflow:hidden;
+    backdrop-filter:blur(12px);
+    box-shadow:0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.search-bar input{
+    flex-grow:1;height:48px;background:transparent;border:none;
+    padding:0 18px;color:#fff;font-size:.82rem;
+    letter-spacing:.05em;outline:none;font-family:var(--font-mono);
+}
+.search-bar input::placeholder{color:var(--muted);}
+.search-go{
+    background:var(--grad-blue);border:none;color:#fff;
+    font-weight:700;font-size:.75rem;padding:0 22px;
+    cursor:pointer;letter-spacing:.08em;
+    font-family:var(--font-body);transition:opacity .15s;
+}
+.search-go:hover{opacity:.85;}
+
+.scroll-hint{
+    position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+    z-index:10;text-align:center;
+    font-size:.65rem;color:var(--muted);
+    letter-spacing:.15em;text-transform:uppercase;
+}
+.scroll-hint::before{
+    content:'';display:block;width:1px;height:40px;
+    background:linear-gradient(to bottom,var(--blue),transparent);
+    margin:0 auto 8px;
+}
+
+/* ============ TICKER ============ */
+.ticker{
+    background:var(--grad-blue);
+    padding:11px 0;overflow:hidden;
+    width:90%;margin:32px auto 0;
+    border-radius:6px;
+    box-shadow:0 8px 24px rgba(30,79,196,0.3);
+}
+.ticker-track{
+    display:flex;gap:60px;width:max-content;
+    animation:tickerRoll 25s linear infinite;white-space:nowrap;
+}
+.ticker-track span{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;}
+.ticker-sep{color:rgba(255,255,255,.35);}
+@keyframes tickerRoll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ============ INFINITE SLIDER ============ */
+.slider-section{
+    background:rgba(14,32,74,0.5);
+    padding:52px 0;
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+    margin-top:50px;
+}
+.slider-header{width:90%;margin:0 auto 20px;}
+.slider-header p{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.18em;margin-bottom:4px;}
+.slider-header h3{
+    font-family:var(--font-head);font-size:1.9rem;
+    letter-spacing:.08em;
+    background:linear-gradient(90deg,var(--white),var(--blue-bright));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.carousel-wrap{width:100%;overflow:hidden;position:relative;display:flex;}
+.carousel-track{
+    display:flex;gap:16px;width:max-content;
+    animation:marqueeLoop 35s linear infinite;padding:8px 0;
+}
+.carousel-wrap:hover .carousel-track{animation-play-state:paused;}
+.loop-card{
+    width:260px;height:150px;
+    background:var(--surface1);
+    border-radius:6px;overflow:hidden;position:relative;
+    cursor:pointer;flex-shrink:0;
+    border:1px solid var(--border);
+    transition:transform .3s,border-color .3s;
+}
+.loop-card img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+.loop-card:hover{transform:translateY(-6px);border-color:var(--blue-bright);}
+.loop-card:hover img{transform:scale(1.06);}
+.loop-card-meta{
+    position:absolute;bottom:0;left:0;width:100%;
+    background:linear-gradient(to top,rgba(8,15,36,.94),transparent);
+    padding:14px 12px 10px;
+}
+.loop-card-meta h4{font-size:.85rem;margin-bottom:2px;}
+.loop-card-meta p{font-size:.68rem;color:var(--muted);}
+@keyframes marqueeLoop{
+    0%{transform:translateX(0);}
+    100%{transform:translateX(calc(-50% - 8px));}
+}
+
+/* ============ SERVICES ============ */
+.services-section{width:90%;margin:70px auto;}
+.sec-label{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.18em;margin-bottom:6px;}
+.sec-title{
+    font-family:var(--font-head);font-size:2.9rem;
+    letter-spacing:.06em;margin-bottom:28px;
+}
+.sec-title span.blue{color:var(--blue-bright);}
+.sec-title span.red{color:var(--red-bright);}
+
+.tabs{
+    display:flex;gap:6px;flex-wrap:wrap;
+    border-bottom:1px solid var(--border);
+    margin-bottom:28px;
+}
+.tab{
+    padding:10px 22px;
+    border:1px solid var(--border);border-bottom:none;
+    background:var(--surface1);color:var(--muted);
+    border-radius:8px 8px 0 0;cursor:pointer;
+    font-size:.8rem;font-weight:600;
+    font-family:var(--font-body);
+    transition:all .2s;letter-spacing:.03em;
+    position:relative;bottom:-1px;
+}
+.tab:hover{color:var(--white);background:var(--surface2);}
+.tab.active{background:var(--grad-blue);color:#fff;border-color:var(--blue);}
+
+.svc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+.svc-card{
+    background:var(--surface1);border-radius:8px;overflow:hidden;
+    border:1px solid var(--border);position:relative;
+    transition:border-color .3s,transform .3s;cursor:pointer;
+}
+.svc-card:hover{border-color:var(--blue-bright);transform:translateY(-4px);box-shadow:0 12px 32px rgba(30,79,196,0.2);}
+.svc-card img{width:100%;height:158px;object-fit:cover;display:block;transition:transform .4s;}
+.svc-card:hover img{transform:scale(1.05);}
+.svc-card-body{padding:14px;}
+.svc-card-body h4{font-size:.9rem;font-weight:700;margin-bottom:4px;}
+.svc-card-body small{font-size:.7rem;color:var(--muted);font-family:var(--font-mono);}
+.svc-tag{
+    position:absolute;top:10px;left:10px;
+    background:var(--grad-blue);color:#fff;
+    font-size:.6rem;font-weight:700;
+    padding:3px 8px;border-radius:4px;letter-spacing:.06em;text-transform:uppercase;
+}
+.svc-tag.hot{background:var(--grad-red);}
+.svc-tag.new{background:linear-gradient(135deg,var(--gold) 0%,#a0720e 100%);color:#000;}
+.svc-overlay{
+    position:absolute;inset:0;
+    background:rgba(8,15,36,0.55);
+    display:flex;justify-content:center;align-items:center;gap:10px;
+    opacity:0;transition:opacity .3s;
+}
+.svc-card:hover .svc-overlay{opacity:1;}
+.ov-btn{
+    padding:9px 18px;border-radius:30px;border:none;
+    cursor:pointer;font-size:.75rem;font-weight:700;
+    font-family:var(--font-body);transition:transform .15s;
+}
+.ov-btn:hover{transform:scale(1.06);}
+.ov-get{background:var(--grad-blue);color:#fff;}
+.ov-join{background:var(--grad-gold);color:#000;}
+
+/* ============ ABOUT ============ */
+.about-section{
+    width:90%;margin:80px auto;
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:60px;align-items:center;
+}
+.about-text h2{
+    font-family:var(--font-head);font-size:3rem;
+    letter-spacing:.06em;margin-bottom:16px;line-height:1.1;
+}
+.about-text p{font-size:.95rem;line-height:1.8;color:var(--muted-lt);margin-bottom:14px;}
+.about-stats{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:28px;}
+.stat-box{
+    background:var(--surface1);
+    border:1px solid var(--border);
+    border-radius:8px;padding:20px;text-align:center;
+    transition:border-color .2s,box-shadow .2s;
+}
+.stat-box:hover{border-color:var(--blue-bright);box-shadow:0 8px 24px rgba(30,79,196,0.15);}
+.stat-box .num{
+    font-family:var(--font-head);font-size:2.5rem;
+    letter-spacing:.05em;
+    background:var(--grad-gold);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    line-height:1;margin-bottom:4px;
+}
+.stat-box p{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;}
+
+.about-visual{position:relative;}
+.about-img-wrap{
+    border-radius:10px;overflow:hidden;
+    border:1px solid var(--border);
+    box-shadow:0 30px 60px rgba(0,0,0,.6),0 0 40px rgba(30,79,196,0.1);
+}
+.about-img-wrap img{width:100%;display:block;object-fit:cover;height:420px;}
+.about-badge{
+    position:absolute;bottom:-20px;right:-20px;
+    background:var(--grad-navy);
+    border:1px solid var(--blue);
+    border-radius:10px;padding:20px;
+    text-align:center;width:140px;
+    box-shadow:0 12px 32px rgba(30,79,196,0.3);
+}
+.about-badge .big{
+    font-family:var(--font-head);font-size:2.8rem;
+    letter-spacing:.03em;line-height:1;
+    color:var(--gold-lt);
+}
+.about-badge p{font-size:.68rem;color:var(--muted-lt);text-transform:uppercase;letter-spacing:.1em;}
+
+/* Process strip */
+.process-strip{
+    width:90%;margin:0 auto 70px;
+    background:var(--surface1);
+    border:1px solid var(--border);
+    border-radius:10px;border-left:4px solid var(--blue);
+    padding:28px 32px;
+}
+.process-strip h4{
+    font-family:var(--font-head);font-size:1.6rem;
+    letter-spacing:.08em;margin-bottom:14px;
+    color:var(--white);
+}
+.process-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;}
+.proc-item{display:flex;align-items:flex-start;gap:10px;}
+.proc-icon{color:var(--blue-bright);font-size:1rem;margin-top:2px;flex-shrink:0;}
+.proc-text{font-size:.8rem;color:var(--muted-lt);line-height:1.6;}
+.proc-text strong{display:block;color:var(--white);margin-bottom:2px;font-size:.82rem;}
+
+/* ============ TESTIMONIALS ============ */
+.testimonials-section{width:90%;margin:70px auto;}
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin-top:30px;}
+.testi-card{
+    background:var(--surface1);
+    border:1px solid var(--border);
+    border-radius:10px;padding:24px;
+    transition:border-color .2s,transform .2s;
+}
+.testi-card:hover{border-color:var(--gold);transform:translateY(-4px);}
+.testi-stars{color:var(--gold);font-size:.9rem;margin-bottom:12px;}
+.testi-text{font-size:.85rem;color:var(--muted-lt);line-height:1.7;margin-bottom:16px;font-style:italic;}
+.testi-author{display:flex;align-items:center;gap:10px;}
+.testi-av{
+    width:38px;height:38px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:.9rem;flex-shrink:0;
+}
+.testi-name{font-weight:700;font-size:.82rem;}
+.testi-role{font-size:.7rem;color:var(--muted);}
+
+/* ============ CTA BANNER ============ */
+.cta-banner{
+    width:90%;margin:0 auto 80px;
+    background:var(--grad-panel);
+    border:1px solid rgba(59,130,246,0.2);
+    border-radius:12px;padding:60px 50px;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:30px;position:relative;overflow:hidden;
+    box-shadow:0 24px 64px rgba(0,0,0,.5),inset 0 1px 0 rgba(59,130,246,0.1);
+}
+.cta-banner::before{
+    content:'TLC';position:absolute;right:-30px;top:50%;
+    transform:translateY(-50%);
+    font-family:var(--font-head);font-size:12rem;
+    color:rgba(255,255,255,.04);line-height:1;pointer-events:none;
+}
+.cta-banner::after{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--blue),var(--blue-bright),var(--red),var(--gold));
+    border-radius:2px 2px 0 0;
+}
+.cta-text h2{
+    font-family:var(--font-head);font-size:2.8rem;
+    letter-spacing:.08em;line-height:1.1;margin-bottom:8px;
+}
+.cta-text p{font-size:.9rem;color:var(--muted-lt);}
+.cta-acts{display:flex;gap:12px;flex-shrink:0;}
+.cta-btn-blue{
+    background:var(--grad-blue);color:#fff;
+    border:none;border-radius:6px;padding:14px 28px;
+    font-weight:700;font-size:.85rem;cursor:pointer;
+    transition:all .15s;letter-spacing:.04em;
+    font-family:var(--font-body);
+    box-shadow:0 6px 20px rgba(30,79,196,0.4);
+}
+.cta-btn-blue:hover{transform:scale(1.04);box-shadow:0 8px 28px rgba(30,79,196,0.6);}
+.cta-btn-outline{
+    background:transparent;color:#fff;
+    border:2px solid rgba(255,255,255,.3);
+    border-radius:6px;padding:12px 28px;
+    font-weight:700;font-size:.85rem;cursor:pointer;
+    transition:all .15s;letter-spacing:.04em;
+    font-family:var(--font-body);
+}
+.cta-btn-outline:hover{border-color:#fff;background:rgba(255,255,255,.08);}
+
+/* ============ FOOTER ============ */
+footer{
+    background:var(--navy-deep);
+    border-top:1px solid var(--border);
+    padding:70px 0 30px;position:relative;overflow:hidden;
+}
+footer::before{
+    content:'TLC';position:absolute;left:-30px;bottom:-40px;
+    font-family:var(--font-head);font-size:18rem;
+    color:rgba(255,255,255,.02);line-height:1;pointer-events:none;
+}
+.footer-inner{width:90%;margin:0 auto;}
+.footer-grid{
+    display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
+    gap:50px;margin-bottom:50px;
+}
+.footer-brand .logo-wrap{margin-bottom:14px;}
+.footer-brand p{font-size:.82rem;color:var(--muted);line-height:1.7;max-width:280px;}
+.footer-socials{display:flex;gap:10px;margin-top:20px;}
+.social-btn{
+    width:36px;height:36px;border-radius:8px;
+    background:var(--surface1);
+    border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--muted);font-size:.9rem;cursor:pointer;
+    transition:all .2s;text-decoration:none;
+}
+.social-btn:hover{background:var(--blue);border-color:var(--blue);color:#fff;}
+.footer-col h5{
+    font-size:.7rem;text-transform:uppercase;
+    letter-spacing:.18em;color:var(--muted);
+    margin-bottom:16px;font-weight:600;
+}
+.footer-col ul{list-style:none;}
+.footer-col li{margin-bottom:10px;}
+.footer-col a{
+    color:rgba(123,141,184,0.8);text-decoration:none;
+    font-size:.82rem;transition:color .2s;
+    display:flex;align-items:center;gap:6px;
+}
+.footer-col a:hover{color:var(--gold);}
+.footer-col a::before{content:'→';font-size:.65rem;color:var(--border);}
+.footer-col a:hover::before{color:var(--gold);}
+
+.newsletter-form{display:flex;gap:8px;margin-top:10px;}
+.newsletter-form input{
+    flex:1;padding:9px 12px;
+    background:var(--surface1);
+    border:1px solid var(--border);
+    border-radius:6px;color:#fff;
+    font-size:.78rem;outline:none;
+    font-family:var(--font-body);transition:border-color .2s;
+}
+.newsletter-form input:focus{border-color:var(--blue-bright);}
+.newsletter-form button{
+    background:var(--grad-blue);border:none;color:#fff;
+    border-radius:6px;padding:9px 14px;cursor:pointer;
+    font-size:.78rem;font-family:var(--font-body);font-weight:700;
+    transition:opacity .15s;
+}
+.newsletter-form button:hover{opacity:.85;}
+
+.footer-bottom{
+    border-top:1px solid var(--border);padding-top:24px;
+    display:flex;justify-content:space-between;align-items:center;
+    flex-wrap:wrap;gap:12px;
+}
+.footer-bottom p{font-size:.75rem;color:rgba(123,141,184,0.5);}
+.footer-btm-links{display:flex;gap:20px;}
+.footer-btm-links a{font-size:.73rem;color:rgba(123,141,184,0.5);text-decoration:none;transition:color .2s;}
+.footer-btm-links a:hover{color:var(--muted-lt);}
+.footer-line{
+    height:3px;margin-top:20px;
+    background:linear-gradient(90deg,var(--blue) 0%,var(--red) 50%,var(--gold) 80%,transparent 100%);
+}
+
+/* ============ CONTACT DRAWER ============ */
+.drawer{
+    position:fixed;right:-360px;top:50%;
+    transform:translateY(-50%);
+    width:320px;z-index:998;transition:.4s cubic-bezier(.4,0,.2,1);
+}
+.drawer.open{right:16px;}
+.drawer-glass{
+    padding:24px;border-radius:16px;
+    background:rgba(8,15,36,0.96);
+    backdrop-filter:blur(28px);
+    border:1px solid rgba(59,130,246,0.25);
+    box-shadow:0 24px 64px rgba(0,0,0,.6),inset 0 1px 0 rgba(59,130,246,0.1);
+    color:#fff;position:relative;overflow:hidden;
+}
+.drawer-glass::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--blue),var(--red),var(--gold));
+}
+.drawer-glass h3{
+    font-family:var(--font-head);font-size:1.6rem;
+    letter-spacing:.06em;margin-bottom:4px;
+}
+.drawer-glass p{font-size:.76rem;color:var(--blue-bright);margin-bottom:14px;}
+.field{
+    width:100%;padding:10px 13px;margin:5px 0;
+    border-radius:8px;
+    border:1px solid rgba(59,130,246,0.2);
+    background:rgba(30,79,196,0.08);
+    color:#fff;font-size:.8rem;
+    font-family:var(--font-body);outline:none;transition:border-color .2s;
+}
+.field:focus{border-color:var(--blue-bright);}
+textarea.field{height:72px;resize:none;}
+.send{
+    width:100%;padding:12px;border:none;border-radius:8px;
+    background:var(--grad-blue);
+    color:#fff;font-weight:700;font-size:.82rem;
+    cursor:pointer;margin-top:8px;
+    font-family:var(--font-body);letter-spacing:.04em;
+    box-shadow:0 6px 20px rgba(30,79,196,0.35);
+    transition:opacity .2s;
+}
+.send:hover{opacity:.88;}
+.cancel{
+    margin-top:6px;width:100%;padding:9px;
+    border:1px solid var(--border);border-radius:8px;
+    background:transparent;color:var(--muted);
+    cursor:pointer;font-family:var(--font-body);font-size:.78rem;transition:color .2s;
+}
+.cancel:hover{color:#fff;}
+
+/* ============ CONTACT PAGE ============ */
+#contact-page{
+    display:none;
+    min-height:100vh;
+    background:var(--bg);
+    position:relative;
+    overflow:hidden;
+}
+#contact-page.shown{display:block;}
+
+.contact-hero{
+    width:100%;
+    background:var(--grad-panel);
+    border-bottom:1px solid var(--border);
+    padding:80px 0 60px;
+    position:relative;overflow:hidden;
+}
+.contact-hero::after{
+    content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--blue),var(--blue-bright),var(--red),var(--gold));
+}
+.contact-hero-inner{width:90%;margin:0 auto;text-align:center;}
+.contact-hero h1{
+    font-family:var(--font-head);font-size:clamp(3rem,7vw,5.5rem);
+    letter-spacing:.08em;line-height:1;margin-bottom:12px;
+}
+.contact-hero h1 .ch-line1{
+    display:block;
+    background:linear-gradient(90deg,var(--white),var(--off-white));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.contact-hero h1 .ch-line2{
+    display:block;
+    background:linear-gradient(90deg,var(--blue-bright),var(--blue),var(--red));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.contact-hero p{font-size:.95rem;color:var(--muted-lt);max-width:480px;margin:0 auto;line-height:1.7;}
+
+/* Contact layout */
+.contact-body{width:90%;margin:60px auto 80px;display:grid;grid-template-columns:1fr 1.4fr;gap:50px;align-items:start;}
+
+/* Info cards */
+.contact-info{display:flex;flex-direction:column;gap:20px;}
+.contact-info-card{
+    background:var(--surface1);
+    border:1px solid var(--border);
+    border-radius:10px;padding:22px;
+    transition:border-color .2s,transform .2s;
+}
+.contact-info-card:hover{border-color:var(--blue-bright);transform:translateX(4px);}
+.ci-icon{
+    width:42px;height:42px;border-radius:10px;
+    background:var(--grad-blue);
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.1rem;margin-bottom:12px;
+}
+.ci-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--blue-bright);margin-bottom:4px;}
+.ci-value{font-size:.95rem;color:var(--white);font-weight:600;margin-bottom:4px;}
+.ci-sub{font-size:.78rem;color:var(--muted);}
+
+/* TLC brand signature card */
+.brand-card{
+    background:var(--grad-panel);
+    border:1px solid rgba(59,130,246,0.25);
+    border-radius:10px;padding:22px;position:relative;overflow:hidden;
+}
+.brand-card::after{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--blue),var(--red),var(--gold));
+}
+.brand-card .logo-wrap{margin-bottom:12px;}
+.brand-card p{font-size:.82rem;color:var(--muted-lt);line-height:1.7;}
+.brand-services{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+.brand-svc-pill{
+    padding:5px 12px;border-radius:4px;
+    font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    cursor:pointer;transition:opacity .2s;
+}
+.brand-svc-pill:hover{opacity:.8;}
+.p-blue{background:var(--grad-blue);color:#fff;}
+.p-red{background:var(--grad-red);color:#fff;}
+.p-gold{background:var(--grad-gold);color:#000;}
+
+/* Form */
+.contact-form-card{
+    background:var(--surface1);
+    border:1px solid var(--border);
+    border-radius:14px;padding:40px;
+    position:relative;overflow:hidden;
+}
+.contact-form-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,var(--blue),var(--blue-bright),var(--red),var(--gold));
+}
+.cf-head{margin-bottom:28px;}
+.cf-head h3{
+    font-family:var(--font-head);font-size:2rem;
+    letter-spacing:.06em;margin-bottom:6px;
+}
+.cf-head p{font-size:.82rem;color:var(--muted);}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.form-group.full{grid-column:1/-1;}
+.form-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted-lt);}
+.form-input{
+    padding:12px 16px;border-radius:8px;
+    border:1px solid rgba(59,130,246,0.2);
+    background:rgba(30,79,196,0.06);
+    color:var(--white);font-size:.88rem;
+    font-family:var(--font-body);outline:none;
+    transition:border-color .2s,background .2s;
+}
+.form-input:focus{border-color:var(--blue-bright);background:rgba(30,79,196,0.12);}
+.form-input::placeholder{color:var(--muted);}
+textarea.form-input{height:130px;resize:vertical;}
+select.form-input{cursor:pointer;}
+select.form-input option{background:var(--navy-deep);}
+
+.service-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+.chip{
+    padding:7px 14px;border-radius:6px;
+    border:1px solid var(--border);
+    background:var(--surface3);
+    color:var(--muted-lt);font-size:.75rem;font-weight:600;
+    cursor:pointer;transition:all .2s;
+}
+.chip:hover{border-color:var(--blue-bright);color:var(--white);}
+.chip.selected{background:var(--grad-blue);border-color:var(--blue);color:#fff;}
+
+.form-submit{
+    width:100%;padding:14px;
+    background:var(--grad-blue);
+    border:none;border-radius:8px;
+    color:#fff;font-size:.9rem;font-weight:700;
+    font-family:var(--font-body);letter-spacing:.06em;
+    cursor:pointer;
+    box-shadow:0 8px 28px rgba(30,79,196,0.4);
+    transition:all .2s;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    margin-top:6px;
+}
+.form-submit:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(30,79,196,0.6);}
+
+/* Map / office strip */
+.contact-offices{
+    width:90%;margin:0 auto 80px;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+    gap:18px;
+}
+.office-card{
+    background:var(--surface1);border:1px solid var(--border);
+    border-radius:10px;padding:22px;
+    transition:border-color .2s,transform .2s;
+    position:relative;overflow:hidden;
+}
+.office-card::before{
+    content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:var(--grad-blue);
+}
+.office-card:hover{border-color:var(--blue-bright);transform:translateY(-4px);}
+.office-city{
+    font-family:var(--font-head);font-size:1.4rem;
+    letter-spacing:.08em;margin-bottom:4px;color:var(--white);
+}
+.office-country{font-size:.7rem;color:var(--blue-bright);text-transform:uppercase;letter-spacing:.12em;margin-bottom:14px;font-weight:700;}
+.office-detail{font-size:.8rem;color:var(--muted-lt);line-height:1.8;}
+
+/* Success state */
+.form-success{
+    display:none;text-align:center;padding:40px 20px;
+}
+.form-success.shown{display:block;}
+.success-icon{
+    width:70px;height:70px;border-radius:50%;
+    background:linear-gradient(135deg,var(--blue) 0%,var(--blue-bright) 100%);
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.8rem;margin:0 auto 18px;
+    box-shadow:0 8px 24px rgba(30,79,196,0.4);
+}
+.form-success h3{
+    font-family:var(--font-head);font-size:2rem;
+    letter-spacing:.06em;margin-bottom:8px;
+}
+.form-success p{font-size:.9rem;color:var(--muted-lt);line-height:1.7;}
+
+/* ============ PAGE TRANSITIONS ============ */
+#main-site{transition:opacity .3s;}
+#contact-page{transition:opacity .3s;}
+#main-site.hidden{opacity:0;pointer-events:none;}
+
+/* Animated entry for contact page sections */
+.contact-hero,.contact-body,.contact-offices{
+    animation:fadeUp .5s ease forwards;
+}
+@keyframes fadeUp{
+    from{opacity:0;transform:translateY(20px);}
+    to{opacity:1;transform:translateY(0);}
+}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:1024px){
+    .deck-wing{display:none;}
+    .about-section{grid-template-columns:1fr;gap:30px;}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+    .about-badge{display:none;}
+    .cta-banner{flex-direction:column;text-align:center;}
+    .cta-acts{justify-content:center;}
+    .contact-body{grid-template-columns:1fr;}
+}
+@media(max-width:768px){
+    .wrap{width:95%;}
+    .services-section,.about-section,.testimonials-section,
+    .process-strip,.cta-banner,.footer-inner,
+    .contact-info,.contact-offices{width:95%;}
+    .footer-grid{grid-template-columns:1fr;}
+    .spotlight{width:300px;height:360px;}
+    .spot-info h2{font-size:2rem;}
+    .contact-form-card{padding:24px;}
+    .form-row{grid-template-columns:1fr;}
+}
+</style>
 </head>
 <body>
 
-    <!-- BACKGROUND CAROUSEL IMAGE SLIDESHOW SLOTS -->
-    <div class="carousel-bg-wrapper">
-        <div class="slide-bg active" style="background-image: url('tlc gradient.png');"></div>
-        <div class="slide-bg" style="background-image: url('backgroung1.png');"></div>
-        <div class="slide-bg" style="background-image: url('bg2.png');"></div>
+<!-- ==================== STICKY HEADER ==================== -->
+<header>
+<div class="wrap">
+  <div class="nav-top">
+    <a class="nav-logo" href="#">
+      <!-- Logo image using the uploaded TLC logo -->
+      <img class="nav-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png" alt="TLC Freelancers" style="display:none;" onerror="this.style.display='none'">
+      <!-- Fallback: recreate logo from brand colors -->
+      <div class="nav-logo-fallback">
+       <img src="tlclogo.png" width="200px"/>
+      </div>
+    </a>
+    <div class="nav-actions">
+      <button class="nav-icon" title="Search"><i class="fa fa-search"></i></button>
+      <button class="nav-icon" title="Language"><i class="fa fa-globe"></i></button>
+      <button class="nav-icon" title="Account"><i class="fa fa-user"></i></button>
+      <button class="nav-cta" onclick="openDrawer('GENERAL')">Create Account</button>
+    </div>
+  </div>
+
+  <nav style="display:flex;align-items:center;border-top:1px solid var(--border);height:44px;gap:2px;" class="subnav">
+
+    <div class="nav-item">
+      <a href="#" onclick="showMain(event)">Home</a>
+      <div class="drop" style="min-width:340px;">
+        <div class="drop-links">
+          <div class="dl-head">Quick Access</div>
+          <a href="#services"><i class="fa fa-briefcase"></i> Browse Services</a>
+          <a href="#" onclick="showMain(event)"><i class="fa fa-home"></i> Back to Main</a>
+          <a href="#"><i class="fa fa-chart-bar"></i> Portfolio</a>
+          <hr class="hr-drop">
+          <div class="dl-head">Tools</div>
+          <a href="#"><i class="fa fa-plug"></i> API Access</a>
+          <a href="#"><i class="fa fa-code"></i> Developer Docs</a>
+        </div>
+      </div>
     </div>
 
-    <!-- HEADER NAVIGATION INTERFACE -->
-    <header>
-        <div class="nav-left">
-            <a href="#" class="brand-logo"><img width="150px" src="tlclogo.png"/><span></span></a>
-            <ul class="main-menu">
-                <li><a href="#" class="active">Home</a></li>
-                <li><a href="#web-dev">Web Solutions</a></li>
-                <li><a href="#other-services">Capabilities</a></li>
-                <li><a href="#about-collective">About Collective</a></li>
-            </ul>
+    <div class="nav-item">
+      <a href="#" class="active">Our Process</a>
+      <div class="drop drop-wide">
+        <div class="drop-inner">
+          <div class="drop-left">
+            <div class="drop-title">TLC DELIVERY PIPELINE</div>
+            <div class="drop-sub">Our structured approach to delivering world-class technical solutions.</div>
+            <div class="drop-cards">
+              <div class="dc"><div class="dc-ico">📋</div><div class="dc-title">Requirements Gathering</div><div class="dc-text">We scope every criterion and constraint before any code is initialized.</div></div>
+              <div class="dc"><div class="dc-ico">🎨</div><div class="dc-title">High Fidelity Prototyping</div><div class="dc-text">Interactive wireframes map operational interfaces before development.</div></div>
+              <div class="dc"><div class="dc-ico">🚀</div><div class="dc-title">Clean Code & Deployment</div><div class="dc-text">Performance-optimized, stable architectures at pace.</div></div>
+            </div>
+            <a href="#" class="drop-cta">Learn More →</a>
+          </div>
+          <div class="drop-right"><img src="software dev.jpg" alt="Team" style="height:200px;object-fit:cover;"></div>
         </div>
-        <div class="nav-right">
-            <button class="nav-icon">🔔</button>
-            <button class="nav-icon">🔍</button>
-            <div class="user-meta">
-                <div><strong>Teta Kollie</strong><br><span style="color:var(--text-muted);">123456789</span></div>
-                <div class="user-avatar"></div>
+      </div>
+    </div>
+
+    <div class="nav-item">
+      <a href="#services">Services</a>
+      <div class="drop drop-wide">
+        <div class="drop-inner">
+          <div class="drop-left">
+            <div class="drop-title">WHAT WE BUILD</div>
+            <div class="drop-sub">Full-stack solutions by elite freelancers — from design to deployment.</div>
+            <div class="drop-cards">
+              <div class="dc"><div class="dc-ico">💻</div><div class="dc-title">Web & Software Dev</div><div class="dc-text">React, Node, Python, mobile apps, SaaS platforms, enterprise systems.</div></div>
+              <div class="dc"><div class="dc-ico">📐</div><div class="dc-title">AutoCAD & Engineering</div><div class="dc-text">Architectural blueprints, MEP drawings, 3D structural models.</div></div>
+              <div class="dc"><div class="dc-ico">🎭</div><div class="dc-title">Design & Fine Arts</div><div class="dc-text">Brand identity, UI/UX, digital illustration, motion graphics.</div></div>
+            </div>
+            <a href="#services" class="drop-cta">View All Services →</a>
+          </div>
+          <div class="drop-right"><img src="our services.jpg" alt="Services" style="height:200px;object-fit:cover;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-item">
+      <a href="#">About Us</a>
+      <div class="drop drop-wide">
+        <div style="display:flex;align-items:center;gap:2rem;padding:1.8rem;">
+          <div style="flex:1;font-size:.82rem;color:var(--muted-lt);line-height:1.7;">
+            <strong style="color:var(--white);font-size:1.3rem;display:block;margin-bottom:.6rem;font-family:var(--font-head);letter-spacing:.05em;">THE LIBERIAN COOPERATION OF FREELANCERS (TLC)</strong>
+            An enterprise consortium of certified technical architects, engineers, and multimedia veterans operating at the intersection of global innovation and Liberian excellence. We deliver uncompromised project velocity directly to companies on an elite independent freelance schedule.
+          </div>
+          <div style="width:190px;flex-shrink:0;border-radius:8px;overflow:hidden;border:1px solid var(--border);">
+            <img src="TetaKollie2.png" alt="TLC Team" style="width:100%;height:180px;object-fit:cover;display:block;">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-item">
+      <a href="#">Portfolio</a>
+      <div class="drop" style="min-width:280px;">
+        <div class="drop-links">
+          <div class="dl-head">Recent Work</div>
+          <a href="#"><i class="fa fa-globe"></i> Web Projects</a>
+          <a href="#"><i class="fa fa-mobile"></i> Mobile Apps</a>
+          <a href="#"><i class="fa fa-drafting-compass"></i> CAD Designs</a>
+          <a href="#"><i class="fa fa-palette"></i> Graphic Work</a>
+          <hr class="hr-drop">
+          <div class="dl-head">Case Studies</div>
+          <a href="#"><i class="fa fa-file-alt"></i> E-Commerce Platform</a>
+          <a href="#"><i class="fa fa-file-alt"></i> Hospital Management</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT — navigates to contact page -->
+    <div class="nav-item">
+      <a href="#" onclick="showContact(event)" style="color:var(--gold-lt) !important;">Contact Us</a>
+    </div>
+
+  </nav>
+</div>
+</header>
+
+
+<!-- ==================== MAIN SITE ==================== -->
+<div id="main-site">
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-mesh"></div>
+    <div class="hero-bgs">
+        <div class="slide-bg active" style="background-image:url('https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1600&auto=format&fit=crop');"></div>
+        <div class="slide-bg" style="background-image:url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1600&auto=format&fit=crop');"></div>
+        <div class="slide-bg" style="background-image:url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1600&auto=format&fit=crop');"></div>
+    </div>
+    <div class="hero-star-deco"></div>
+    <div class="hero-stripe"></div>
+
+    <div class="hero-content">
+        <div class="hero-kicker">Liberia's Premier Technical Collective</div>
+        <h1 class="hero-h1">
+            <span class="line1">WE BUILD</span>
+            <span  style="color: var(--red-dk) !important;">THE FUTURE</span>
+        </h1>
+        <p class="hero-sub" style="color: goldenrod !important;">The Liberian Cooperation of Freelancers — Engineering Excellence</p>
+    </div>
+
+    <div class="stage">
+        <button class="stage-arrow stage-arrow-left" onclick="shiftStage(-1)">‹</button>
+        <div class="deck-wing deck-wing-left">
+            <div class="wing-card"><img src="graphicD.jpg" alt="Graphic"><div class="wlabel">Graphic Design</div></div>
+            <div class="wing-card"><img src="cad.jpg" alt="CAD"><div class="wlabel">AutoCAD Systems</div></div>
+        </div>
+        <div class="spotlight">
+            <img id="spotlightImage" src="websitedev.jpg" alt="Featured">
+            <div class="spot-overlay"></div>
+            <div class="spot-info">
+                <h2 id="spotlightTitle">Web Development</h2>
+                <p id="spotlightTagline">(2026) Fullstack · Enterprise SaaS · React · Node</p>
+                <div class="spot-btns">
+                    <button class="sp-btn sp-hire" onclick="openDrawer('HIRE')">▶ Hire TLC</button>
+                    <button class="sp-btn sp-join" onclick="openDrawer('JOIN')">＋ Join TLC</button>
+                </div>
             </div>
         </div>
-    </header>
+        <div class="deck-wing deck-wing-right">
+            <div class="wing-card"><img src="https://images.unsplash.com/photo-1605379399642-870262d3d051?w=300&auto=format&fit=crop" alt="Software"><div class="wlabel">Software Dev</div></div>
+            <div class="wing-card"><img src="fineart.jpg" alt="Art"><div class="wlabel">Fine Art Designs</div></div>
+        </div>
+        <button class="stage-arrow stage-arrow-right" onclick="shiftStage(1)">›</button>
+    </div>
 
-    <!-- HERO DISPLAY STAGE -->
-    <section class="hero-banner">
-        
-        <div class="stage-3d-container">
-            <button class="stage-arrow stage-arrow-left" onclick="shiftStage(-1)">‹</button>
-            
-            <!-- LEFT SKEWED PERSPECTIVE COMPONENT LAYER -->
-            <div class="deck-wing deck-wing-left">
-                <div class="showcase-card">
-                    <img src="graphic-design.png" alt="Graphic Design Frameworks">
-                    <div class="wing-label">Graphic Design</div>
-                </div>
-                <div class="showcase-card">
-                    <img src="𝐀𝐮𝐭𝐨𝐂𝐀𝐃 𝐀𝐫𝐜𝐡𝐢𝐭𝐞𝐜𝐭𝐮𝐫𝐞 𝟐𝐃 & 𝟑𝐃.jfif" alt="AutoCAD Blueprints">
-                    <div class="wing-label">AutoCAD Systems</div>
-                </div>
+    <div class="hero-search">
+        <div class="search-bar">
+            <input type="text" id="searchConsole" placeholder="SEARCH SERVICE BY NAME OR CATEGORY…">
+            <button class="search-go" onclick="handleSearch()">SEARCH</button>
+        </div>
+    </div>
+
+    
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+    <div class="ticker-track">
+        <span>Web Development</span><span class="ticker-sep">★</span>
+        <span>Mobile Applications</span><span class="ticker-sep">★</span>
+        <span>AutoCAD Engineering</span><span class="ticker-sep">★</span>
+        <span>UI/UX Design</span><span class="ticker-sep">★</span>
+        <span>Graphic Design</span><span class="ticker-sep">★</span>
+        <span>Software Architecture</span><span class="ticker-sep">★</span>
+        <span>Fine Arts & Illustration</span><span class="ticker-sep">★</span>
+        <span>Brand Identity</span><span class="ticker-sep">★</span>
+        <span>Data Analytics</span><span class="ticker-sep">★</span>
+        <span>Cloud Deployment</span><span class="ticker-sep">★</span>
+        <span>Web Development</span><span class="ticker-sep">★</span>
+        <span>Mobile Applications</span><span class="ticker-sep">★</span>
+        <span>AutoCAD Engineering</span><span class="ticker-sep">★</span>
+        <span>UI/UX Design</span><span class="ticker-sep">★</span>
+        <span>Graphic Design</span><span class="ticker-sep">★</span>
+        <span>Software Architecture</span><span class="ticker-sep">★</span>
+        <span>Fine Arts & Illustration</span><span class="ticker-sep">★</span>
+        <span>Brand Identity</span><span class="ticker-sep">★</span>
+        <span>Data Analytics</span><span class="ticker-sep">★</span>
+        <span>Cloud Deployment</span><span class="ticker-sep">★</span>
+    </div>
+</div>
+
+<!-- INFINITE SLIDER -->
+<div class="slider-section">
+    <div class="slider-header">
+        <p>Our Expertise</p>
+        <h3>FEATURED SERVICES</h3>
+    </div>
+    <div class="carousel-wrap">
+        <div class="carousel-track" id="carouselTrack">
+            <div class="loop-card"><img src="https://images.unsplash.com/photo-1547658719-da2b81166b58?w=400&auto=format&fit=crop" alt="Web"><div class="loop-card-meta"><h4>Corporate Website</h4><p>Web Development</p></div></div>
+            <div class="loop-card"><img src="https://images.unsplash.com/photo-1605379399642-870262d3d051?w=400&auto=format&fit=crop" alt="Software"><div class="loop-card-meta"><h4>CRM Software</h4><p>Software Dev</p></div></div>
+            <div class="loop-card"><img src="https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400&auto=format&fit=crop" alt="UI"><div class="loop-card-meta"><h4>Mobile UI Kit</h4><p>UI/UX Design</p></div></div>
+            <div class="loop-card"><img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=400&auto=format&fit=crop" alt="CAD"><div class="loop-card-meta"><h4>House Plan</h4><p>AutoCAD Design</p></div></div>
+            <div class="loop-card"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&auto=format&fit=crop" alt="Art"><div class="loop-card-meta"><h4>Digital Painting</h4><p>Fine Art</p></div></div>
+            <div class="loop-card"><img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&auto=format&fit=crop" alt="App"><div class="loop-card-meta"><h4>iOS Application</h4><p>Mobile Dev</p></div></div>
+            <div class="loop-card"><img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&auto=format&fit=crop" alt="Brand"><div class="loop-card-meta"><h4>Brand Identity</h4><p>Graphic Design</p></div></div>
+            <div class="loop-card"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&auto=format&fit=crop" alt="Data"><div class="loop-card-meta"><h4>Data Dashboard</h4><p>Analytics</p></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services-section" id="services">
+    <p class="sec-label">What We Offer</p>
+    <h2 class="sec-title">OUR <span class="blue">SERVICES</span></h2>
+    <div class="tabs" id="tabs"></div>
+    <div class="svc-grid" id="grid"></div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-section">
+    <div class="about-text">
+        <p class="sec-label">Who We Are</p>
+        <h2>ABOUT <span class="blue">TLC</span></h2>
+        <p>The Liberian Cooperation of Freelancers (TLC) is an enterprise consortium of certified technical architects, engineers, and multimedia veterans operating at the intersection of global innovation and local excellence.</p>
+        <p>Through the TLC model, we deliver uncompromised project development velocity directly to companies on an elite independent freelance schedule — from advanced reactive application codebases to precision engineering schematics.</p>
+        <div class="about-stats">
+            <div class="stat-box"><div class="num">150+</div><p>Projects Delivered</p></div>
+            <div class="stat-box"><div class="num">40+</div><p>Expert Engineers</p></div>
+            <div class="stat-box"><div class="num">98%</div><p>Client Satisfaction</p></div>
+            <div class="stat-box"><div class="num">6</div><p>Service Verticals</p></div>
+        </div>
+    </div>
+    <div class="about-visual">
+        <div class="about-img-wrap">
+            <img src="Tee3.png" alt="TLC Team">
+        </div>
+        <div class="about-badge">
+            <div class="big">5+</div>
+            <p>Years of Excellence</p>
+        </div>
+    </div>
+</section>
+
+<!-- PROCESS -->
+<div class="process-strip">
+    <h4>OUR DELIVERY PROCESS</h4>
+    <div class="process-grid">
+        <div class="proc-item"><span class="proc-icon">✓</span><div class="proc-text"><strong>Discovery & Briefing</strong>Full scope, timeline, and budget alignment before any code is written.</div></div>
+        <div class="proc-item"><span class="proc-icon">✓</span><div class="proc-text"><strong>Wireframe & Prototype</strong>Interactive high-fidelity prototypes reviewed and approved by client.</div></div>
+        <div class="proc-item"><span class="proc-icon">✓</span><div class="proc-text"><strong>Development Sprint</strong>Agile development with weekly deliverables and live previews.</div></div>
+        <div class="proc-item"><span class="proc-icon">✓</span><div class="proc-text"><strong>QA & Testing</strong>Rigorous cross-device and cross-browser quality assurance protocols.</div></div>
+        <div class="proc-item"><span class="proc-icon">✓</span><div class="proc-text"><strong>Deployment & Handover</strong>Production launch with full documentation and post-launch support.</div></div>
+        <div class="proc-item"><span class="proc-icon">✓</span><div class="proc-text"><strong>Ongoing Maintenance</strong>Optional retainer packages for continued support and feature additions.</div></div>
+    </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section">
+    <p class="sec-label">Client Feedback</p>
+    <h2 class="sec-title">WHAT CLIENTS <span class="red">SAY</span></h2>
+    <div class="testi-grid">
+        <div class="testi-card">
+            <div class="testi-stars">★★★★★</div>
+            <p class="testi-text">"TLC delivered our corporate portal in record time. The code quality was exceptional and the team communicated flawlessly throughout."</p>
+            <div class="testi-author">
+                <div class="testi-av" style="background:var(--grad-red);">JM</div>
+                <div><div class="testi-name">James Mensah</div><div class="testi-role">CEO, Mensah Logistics</div></div>
             </div>
+        </div>
+        <div class="testi-card">
+            <div class="testi-stars">★★★★★</div>
+            <p class="testi-text">"The AutoCAD blueprints were precise and delivered ahead of schedule. TLC is by far the most professional firm I've worked with."</p>
+            <div class="testi-author">
+                <div class="testi-av" style="background:var(--grad-gold);color:#000;">AK</div>
+                <div><div class="testi-name">Amara Koroma</div><div class="testi-role">Project Manager, BuildCo LR</div></div>
+            </div>
+        </div>
+        <div class="testi-card">
+            <div class="testi-stars">★★★★★</div>
+            <p class="testi-text">"Our mobile app went from concept to App Store in 6 weeks. TLC's engineering team is world-class. Would absolutely recommend."</p>
+            <div class="testi-author">
+                <div class="testi-av" style="background:var(--grad-blue);">FT</div>
+                <div><div class="testi-name">Fatima Touré</div><div class="testi-role">Founder, HealthTrack Africa</div></div>
+            </div>
+        </div>
+        <div class="testi-card">
+            <div class="testi-stars">★★★★★</div>
+            <p class="testi-text">"The branding TLC created for us is stunning. Our customers immediately noticed the new identity and engagement went through the roof."</p>
+            <div class="testi-author">
+                <div class="testi-av" style="background:linear-gradient(135deg,#1a5e2a,#2e7d32);">DW</div>
+                <div><div class="testi-name">David Williams</div><div class="testi-role">Director, Williams & Sons Ltd.</div></div>
+            </div>
+        </div>
+    </div>
+</section>
 
-            <!-- CENTER FOCUS SPOTLIGHT MATRIX CARD -->
-            <div class="center-spotlight-card">
-                <img id="spotlightImage" src="web dev.png" alt="Core Platform Focus">
-                <div class="spotlight-overlay"></div>
-                <div class="spotlight-info-payload">
-                    <div class="meta-badge-row">
-                        
-                        
+<!-- CTA BANNER -->
+<div class="cta-banner">
+    <div class="cta-text">
+        <h2>READY TO BUILD<br>SOMETHING GREAT?</h2>
+        <p>Connect with a senior TLC engineer today. Free consultation, no commitment.</p>
+    </div>
+    <div class="cta-acts">
+        <button class="cta-btn-blue" onclick="openDrawer('HIRE')">Hire TLC Now</button>
+        <button class="cta-btn-outline" onclick="showContact(event)">Get In Touch</button>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="logo-wrap">
+                    <div class="nav-logo-fallback" style="display:flex;align-items:center;gap:0;">
+                        <span style="font-family:var(--font-head);font-size:2.2rem;background:var(--grad-blue);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:.1em;">TLC</span>
+                        <span style="font-size:1rem;color:var(--red);margin:0 4px;transform:translateY(-5px);">★</span>
+                        <span style="font-family:var(--font-head);font-size:2.2rem;color:var(--red);letter-spacing:.06em;">FREELANCERS</span>
                     </div>
-                    <h2 id="spotlightTitle">Web Development</h2>
-                    <p id="spotlightTagline">(2026) Fullstack, Enterprise SaaS, React, Node Systems</p>
-                    <div class="spotlight-actions">
-                        <button class="action-btn btn-watch" onclick="engageTlcChannel()">▶ Hire TLC</button>
-                        <button class="action-btn btn-list" onclick="alert('Added to Consultation Brief queue.')">＋ Join TLC</button>
-                    </div>
+                    <p style="font-size:.7rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;">The Liberian Cooperation of Freelancers</p>
+                </div>
+                <p>An elite consortium of certified engineers, architects, and multimedia professionals delivering world-class technical solutions from Monrovia, Liberia.</p>
+                <div class="footer-socials">
+                    <a class="social-btn" href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a class="social-btn" href="#" title="X"><i class="fab fa-x-twitter"></i></a>
+                    <a class="social-btn" href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a class="social-btn" href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a class="social-btn" href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
-
-            <!-- RIGHT SKEWED PERSPECTIVE COMPONENT LAYER -->
-            <div class="deck-wing deck-wing-right">
-                <div class="showcase-card">
-                    <img src="software development.jfif" alt="Software Engineering Buildout">
-                    <div class="wing-label">Software Dev</div>
-                </div>
-                <div class="showcase-card">
-                    <img src="fine art.jfif" alt="Fine Art Vectors">
-                    <div class="wing-label">Fine Art Designs</div>
-                </div>
+            <div class="footer-col">
+                <h5>Services</h5>
+                <ul>
+                    <li><a href="#">Web Development</a></li>
+                    <li><a href="#">Mobile Applications</a></li>
+                    <li><a href="#">Software Engineering</a></li>
+                    <li><a href="#">UI / UX Design</a></li>
+                    <li><a href="#">AutoCAD & Drafting</a></li>
+                    <li><a href="#">Fine Art & Illustration</a></li>
+                    <li><a href="#">Brand Identity</a></li>
+                    <li><a href="#">Data Analytics</a></li>
+                </ul>
             </div>
-
-            <button class="stage-arrow stage-arrow-right" onclick="shiftStage(1)">›</button>
-        </div>
-
-        <!-- SEARCH FILTRATION INPUT COMPONENT CONSOLE -->
-        <div class="dashboard-control-deck">
-            <div class="search-input-container">
-                <input type="text" placeholder="SEARCH SERVICE BY NAME OR CATEGORY STRATEGIES" id="searchConsole">
-                <button class="search-action-trigger" onclick="alert('Searching pipeline repositories for matching service parameters...')">SEARCH</button>
+            <div class="footer-col">
+                <h5>Company</h5>
+                <ul>
+                    <li><a href="#">About TLC</a></li>
+                    <li><a href="#">Our Process</a></li>
+                    <li><a href="#">Portfolio</a></li>
+                    <li><a href="#">Case Studies</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#" onclick="showContact(event)">Contact Us</a></li>
+                </ul>
             </div>
-            <p class="search-subtext-tags">Web Architecture, Software Frameworks, AutoCAD Systems, Fine Arts UI, Desktop Publishing</p>
-        </div>
-
-        <!-- EXTERNAL DOWNLOAD REPLICAS -->
-        <div class="app-download-footer-widget">
-            <span>🍎 Android Portal</span>
-            <span>🤖 iOS Portal</span>
-            <span>Download TLC Network deployment manifests today!</span>
-        </div>
-
-        <!-- SOCIAL LINK REPLICAS -->
-        <div class="social-media-widget">
-            <span>follow us on social media</span>
-            <span>f</span><span>𝕏</span><span>yt</span><span>in</span>
-        </div>
-
-    </section>
-
-    <!-- INFINITE SCROLLING CONTINUOUS SCROLLER SYSTEM ROW -->
-    <section class="infinite-slider-row-wrapper" id="other-services">
-        <div class="slider-row-header">
-            <p>TOTAL CAPABILITIES DEPLOYED IN QUEUE</p>
-            <h3>Continue Watching: Core Competencies Matrix</h3>
-        </div>
-
-        <div class="infinite-carousel-container">
-            <!-- Track loop is duplicated internally via script for seamless endless marquee execution -->
-            <div class="infinite-track-loop" id="masterInfiniteLoopTrack">
-                
-                <div class="loop-card" onclick="pivotSpotlight('Web Architecture', 'Fullstack, Enterprise SaaS, React, Node Systems', 'https://images.unsplash.com/photo-1547658719-da2b81166b58?q=80&w=600&auto=format&fit=crop')">
-                    <img src="https://images.unsplash.com/photo-1547658719-da2b81166b58?q=80&w=500&auto=format&fit=crop" alt="Web Systems">
-                    <div class="loop-card-meta"><h4>Custom Web Apps</h4><p>Season 1: Core Focus</p></div>
+            <div>
+                <h5>Stay Updated</h5>
+                <p style="font-size:.8rem;color:var(--muted);margin-bottom:12px;line-height:1.6;">Get the latest from TLC — project showcases, tech insights, and service updates.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="your@email.com" id="nlEmail">
+                    <button onclick="handleNewsletter()">→</button>
                 </div>
-                
-                <div class="loop-card" onclick="pivotSpotlight('Software Systems', 'Cloud Systems, Automation Scripts, Heavy Databases', 'https://images.unsplash.com/photo-1605379399642-870262d3d051?q=80&w=600&auto=format&fit=crop')">
-                    <img src="software development.jfif" alt="Software Engineering">
-                    <div class="loop-card-meta"><h4>Software Pipelines</h4><p>Season 1: Deep Tech</p></div>
-                </div>
-
-                <div class="loop-card" onclick="pivotSpotlight('AutoCAD Systems', 'High-Precision Drafts, Architectural BIM Frameworks', 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=600&auto=format&fit=crop')">
-                    <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=500&auto=format&fit=crop" alt="AutoCAD Projects">
-                    <div class="loop-card-meta"><h4>AutoCAD Layouts</h4><p>Season 2: Schematics</p></div>
-                </div>
-
-                <div class="loop-card" onclick="pivotSpotlight('Graphic Design', 'Corporate Identities, Brand Kits, High Fidelity UI UX', 'https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=600&auto=format&fit=crop')">
-                    <img src="https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=500&auto=format&fit=crop" alt="Creative Interface Design">
-                    <div class="loop-card-meta"><h4>UI & Graphic Design</h4><p>Season 1: Brand System</p></div>
-                </div>
-
-                <div class="loop-card" onclick="pivotSpotlight('Desktop Publishing', 'Interactive Catalogs, Volume Multi-Page Print Assembly', 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?q=80&w=600&auto=format&fit=crop')">
-                    <img src="https://images.unsplash.com/photo-1586075010923-2dd4570fb338?q=80&w=500&auto=format&fit=crop" alt="Publishing Design">
-                    <div class="loop-card-meta"><h4>Desktop Publishing</h4><p>Season 3: Layout Media</p></div>
-                </div>
-
-                <div class="loop-card" onclick="pivotSpotlight('Fine Art Vectors', 'Custom Corporate Artwork, Vector Illustrative Canvases', 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=600&auto=format&fit=crop')">
-                    <img src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=500&auto=format&fit=crop" alt="Fine Art Execution">
-                    <div class="loop-card-meta"><h4>Fine Art Integration</h4><p>Season 1: Vector Custom</p></div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- INFORMATION ABOUT REGISTRATION FRAMEWORK -->
-    <section class="tlc-about-block" id="about-collective">
-        <div class="about-grid-frame">
-            <div class="about-text-deck">
-                <h2>The Liberian Cooperation of Freelancers (TLC)</h2>
-                <p>We are an enterprise consortium of certified technical architects, engineers, and high-profile multimedia veterans. By day, our personnel operate within tier-one corporate operations and global institutions. Through the TLC model, we deliver uncompromised project development velocity directly to companies on an elite independent freelance schedule.</p>
-                <p>From advanced custom reactive application codebases down to precision engineering schematic models, our collaborative model matches industry criteria frameworks on every delivery node.</p>
-            </div>
-            
-            <div class="about-text-deck">
-                <div class="process-pipeline-block">
-                    <h4>Production Deployment Methodology</h4>
-                    <ul>
-                        <li><strong>Requirements Matrix Compilation:</strong> We structure scale criteria and constraints completely before code initialization.</li>
-                        <li><strong>High Fidelity Prototyping:</strong> Interactive structural wireframe templates map operational interfaces natively.</li>
-                        <li><strong>Clean Code Development:</strong> Our collective builds performance-optimized, stable architectures.</li>
-                        <li><strong>Cloud Rollout Monitoring:</strong> Fully automated test verification protocols protect edge delivery parameters.</li>
-                    </ul>
+                <p style="font-size:.68rem;color:var(--muted);margin-top:8px;">No spam. Unsubscribe anytime.</p>
+                <div style="margin-top:24px;">
+                    <h5 style="margin-bottom:10px;">Contact</h5>
+                    <p style="font-size:.78rem;color:var(--muted);line-height:2;">
+                        <i class="fa fa-envelope" style="color:var(--blue-bright);margin-right:6px;"></i>info@tlcfreelancers.com<br>
+                        <i class="fa fa-phone" style="color:var(--blue-bright);margin-right:6px;"></i>+231 XXX XXX XXX<br>
+                        <i class="fa fa-map-marker-alt" style="color:var(--red);margin-right:6px;"></i>Monrovia, Liberia
+                    </p>
                 </div>
             </div>
         </div>
-    </section>
+        <div class="footer-bottom">
+            <p>© 2026 TLC Freelancers. All rights reserved. Built with pride in Liberia 🇱🇷</p>
+            <div class="footer-btm-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+            </div>
+        </div>
+        <div class="footer-line"></div>
+    </div>
+</footer>
 
-    <!-- AUTOMATION CONTROLLER SCRIPT LAYER -->
-    <script>
-        // Background Image Slideshow Automatic Rotation Engine
-        const backgroundSlides = document.querySelectorAll('.slide-bg');
-        let currentBgIndex = 0;
+</div><!-- /main-site -->
 
-        function cycleBackgrounds() {
-            backgroundSlides[currentBgIndex].classList.remove('active');
-            currentBgIndex = (currentBgIndex + 1) % backgroundSlides.length;
-            backgroundSlides[currentBgIndex].classList.add('active');
-        }
-        setInterval(cycleBackgrounds, 6000); // Transitions background slide matrices every 6 seconds
 
-        // Dynamic Interactive Spotlight Matrix State Replacer
-        function pivotSpotlight(title, tagline, imgUrl) {
-            document.getElementById('spotlightTitle').innerText = title;
-            document.getElementById('spotlightTagline').innerText = tagline;
-            document.getElementById('spotlightImage').src = imgUrl;
-        }
+<!-- ==================== CONTACT PAGE ==================== -->
+<div id="contact-page">
 
-        // Mock Interactive Navigation System controls
-        function engageTlcChannel() {
-            alert("Connecting request pipeline to a senior TLC Tech Partner for immediate consultation discovery.");
-        }
+<div class="contact-hero">
+    <div class="contact-hero-inner">
+        <div class="hero-kicker" style="margin-bottom:16px;">We'd Love to Hear From You</div>
+        <h1 class="contact-hero">
+            <span class="ch-line1">GET IN</span>
+            <span class="ch-line2">TOUCH</span>
+        </h1>
+        <p>Whether you're looking to hire elite engineers, join our collective, or explore a partnership — we respond within 24 hours.</p>
+    </div>
+</div>
 
-        // Seamless Infinite Loop Duplicator Mechanics
-        const track = document.getElementById('masterInfiniteLoopTrack');
-        const items = Array.from(track.children);
-        // Duplicate content nodes to build continuous infinite carousel architecture flow
-        items.forEach(item => {
-            const clone = item.cloneNode(true);
-            track.appendChild(clone);
-        });
+<div class="contact-body">
 
-        // Interactive Left & Right Wing Selector Simulation Toggle Actions
-        const spotlightData = [
-            { title: "Web Architecture", desc: "(2026) Fullstack, Enterprise SaaS, React, Node Systems", img: "https://images.unsplash.com/photo-1547658719-da2b81166b58?q=80&w=600&auto=format&fit=crop" },
-            { title: "AutoCAD Systems", desc: "High-Precision Drafts, Architectural BIM Frameworks", img: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=600&auto=format&fit=crop" },
-            { title: "Software Pipelines", desc: "Cloud Systems, Automation Scripts, Heavy Databases", img: "https://images.unsplash.com/photo-1605379399642-870262d3d051?q=80&w=600&auto=format&fit=crop" },
-            { title: "UI & Graphic Design", desc: "Corporate Identities, Brand Kits, High Fidelity UI UX", img: "https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=600&auto=format&fit=crop" }
-        ];
-        let dataIndex = 0;
+    <!-- LEFT: INFO + BRAND -->
+    <div class="contact-info">
 
-        function shiftStage(direction) {
-            dataIndex = (dataIndex + direction + spotlightData.length) % spotlightData.length;
-            const chosen = spotlightData[dataIndex];
-            pivotSpotlight(chosen.title, chosen.desc, chosen.img);
-        }
-    </script>
+        <div class="brand-card">
+            <div class="logo-wrap">
+                <div style="display:flex;align-items:center;gap:0;margin-bottom:6px;">
+                    <span style="font-family:var(--font-head);font-size:2rem;background:var(--grad-blue);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:.08em;">TLC</span>
+                    <span style="font-size:.9rem;color:var(--red);margin:0 4px;transform:translateY(-4px);">★</span>
+                    <span style="font-family:var(--font-head);font-size:2rem;color:var(--red);letter-spacing:.04em;">FREELANCERS</span>
+                </div>
+                <p style="font-size:.65rem;color:var(--muted-lt);letter-spacing:.12em;text-transform:uppercase;">The Liberian Cooperation of Freelancers</p>
+            </div>
+            <p>An enterprise consortium of certified technical architects, engineers, and multimedia veterans delivering world-class solutions from Monrovia, Liberia.</p>
+            <div class="brand-services">
+                <span class="brand-svc-pill p-blue">Web Dev</span>
+                <span class="brand-svc-pill p-red">Mobile Apps</span>
+                <span class="brand-svc-pill p-gold">UI/UX</span>
+                <span class="brand-svc-pill p-blue">AutoCAD</span>
+                <span class="brand-svc-pill p-red">Software</span>
+                <span class="brand-svc-pill p-gold">Fine Art</span>
+            </div>
+        </div>
+
+        <div class="contact-info-card">
+            <div class="ci-icon"><i class="fa fa-envelope"></i></div>
+            <div class="ci-label">Email Us</div>
+            <div class="ci-value">info@tlcfreelancers.com</div>
+            <div class="ci-sub">General inquiries & project discussions</div>
+        </div>
+
+        <div class="contact-info-card">
+            <div class="ci-icon"><i class="fa fa-phone"></i></div>
+            <div class="ci-label">Call Us</div>
+            <div class="ci-value">+231 XXX XXX XXX</div>
+            <div class="ci-sub">Mon–Fri, 8:00 AM – 6:00 PM WAT</div>
+        </div>
+
+        <div class="contact-info-card">
+            <div class="ci-icon"><i class="fa fa-map-marker-alt"></i></div>
+            <div class="ci-label">Our Location</div>
+            <div class="ci-value">Monrovia, Liberia</div>
+            <div class="ci-sub">Serving clients globally from West Africa</div>
+        </div>
+
+        <div class="contact-info-card">
+            <div class="ci-icon"><i class="fa fa-globe"></i></div>
+            <div class="ci-label">Website</div>
+            <div class="ci-value">www.tlcfreelancers.com</div>
+            <div class="ci-sub">Visit for portfolio and case studies</div>
+        </div>
+
+        <!-- Social links -->
+        <div style="background:var(--surface1);border:1px solid var(--border);border-radius:10px;padding:20px;">
+            <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted-lt);margin-bottom:14px;">Connect With Us</div>
+            <div class="footer-socials">
+                <a class="social-btn" href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a class="social-btn" href="#" title="X/Twitter"><i class="fab fa-x-twitter"></i></a>
+                <a class="social-btn" href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a class="social-btn" href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a class="social-btn" href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <a class="social-btn" href="#" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- RIGHT: FORM -->
+    <div class="contact-form-card">
+        <div id="formWrap">
+            <div class="cf-head">
+                <h3>SEND A MESSAGE</h3>
+                <p>Fill in the details below — we'll get back to you within 24 hours.</p>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">First Name</label>
+                    <input type="text" class="form-input" id="cf_fname" placeholder="John">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" class="form-input" id="cf_lname" placeholder="Doe">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Work Email</label>
+                    <input type="email" class="form-input" id="cf_email" placeholder="you@company.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-input" id="cf_phone" placeholder="+231 700 000 000">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Company / Organization</label>
+                <input type="text" class="form-input" id="cf_company" placeholder="Your Company Name">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nature of Inquiry</label>
+                <select class="form-input" id="cf_type">
+                    <option value="" disabled selected>Select inquiry type…</option>
+                    <option value="hire">Hire TLC for a Project</option>
+                    <option value="join">Join TLC as a Freelancer</option>
+                    <option value="consult">Request a Consultation</option>
+                    <option value="partner">Partnership / Collaboration</option>
+                    <option value="other">General Inquiry</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Services Needed <span style="color:var(--muted);font-size:.65rem;">(select all that apply)</span></label>
+                <div class="service-chips">
+                    <span class="chip" onclick="toggleChip(this)">Web Development</span>
+                    <span class="chip" onclick="toggleChip(this)">Mobile Apps</span>
+                    <span class="chip" onclick="toggleChip(this)">Software Dev</span>
+                    <span class="chip" onclick="toggleChip(this)">UI / UX Design</span>
+                    <span class="chip" onclick="toggleChip(this)">AutoCAD</span>
+                    <span class="chip" onclick="toggleChip(this)">Graphic Design</span>
+                    <span class="chip" onclick="toggleChip(this)">Fine Art</span>
+                    <span class="chip" onclick="toggleChip(this)">Data Analytics</span>
+                    <span class="chip" onclick="toggleChip(this)">Branding</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Estimated Budget</label>
+                <select class="form-input" id="cf_budget">
+                    <option value="" disabled selected>Select a budget range…</option>
+                    <option>Under $500</option>
+                    <option>$500 – $2,000</option>
+                    <option>$2,000 – $5,000</option>
+                    <option>$5,000 – $15,000</option>
+                    <option>$15,000+</option>
+                    <option>Let's discuss</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Project Description</label>
+                <textarea class="form-input" id="cf_msg" placeholder="Tell us about your project, timeline, and any specific requirements…"></textarea>
+            </div>
+
+            <button class="form-submit" onclick="submitContactForm()">
+                <i class="fa fa-paper-plane"></i>
+                Send Message to TLC
+            </button>
+        </div>
+
+        <div class="form-success" id="formSuccess">
+            <div class="success-icon">✓</div>
+            <h3>MESSAGE SENT!</h3>
+            <p>Thank you for reaching out. A senior TLC representative will contact you within <strong>24 hours</strong>.</p>
+            <br>
+            <button class="form-submit" onclick="resetForm()" style="width:auto;padding:12px 28px;display:inline-flex;">
+                Send Another Message
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Office Cards -->
+<div style="width:90%;margin:0 auto 20px;">
+    <p class="sec-label">Our Presence</p>
+    <h2 class="sec-title" style="font-size:2rem;margin-bottom:20px;">WHERE TO FIND <span class="blue">US</span></h2>
+</div>
+<div class="contact-offices">
+    <div class="office-card">
+        <div class="office-city">MONROVIA</div>
+        <div class="office-country">🇱🇷 Liberia — Headquarters</div>
+        <div class="office-detail">
+            TLC Freelancers HQ<br>
+            Monrovia, Montserrado County<br>
+            <span style="color:var(--blue-bright);">info@tlcfreelancers.com</span><br>
+            +231 XXX XXX XXX
+        </div>
+    </div>
+    <div class="office-card">
+        <div class="office-city">REMOTE</div>
+        <div class="office-country">🌍 West Africa & Beyond</div>
+        <div class="office-detail">
+            Our engineers operate across<br>
+            West Africa, Europe, and North America.<br>
+            We serve clients globally with<br>
+            no geographic constraints.
+        </div>
+    </div>
+    <div class="office-card">
+        <div class="office-city">HOURS</div>
+        <div class="office-country">🕐 Working Schedule (WAT)</div>
+        <div class="office-detail">
+            Monday – Friday: 8:00 AM – 6:00 PM<br>
+            Saturday: 9:00 AM – 2:00 PM<br>
+            Sunday: Closed<br>
+            <span style="color:var(--gold);">Emergency support available 24/7</span>
+        </div>
+    </div>
+    <div class="office-card">
+        <div class="office-city">RESPONSE</div>
+        <div class="office-country">⚡ Our Commitment</div>
+        <div class="office-detail">
+            General inquiries: <strong style="color:var(--white);">Within 24 hrs</strong><br>
+            Project proposals: <strong style="color:var(--white);">Within 48 hrs</strong><br>
+            Emergency support: <strong style="color:var(--gold);">Within 2 hrs</strong><br>
+            Free consultation included.
+        </div>
+    </div>
+</div>
+
+<!-- Contact footer nav -->
+<div style="text-align:center;padding:40px 0 60px;border-top:1px solid var(--border);">
+    <button onclick="showMain(event)" style="background:none;border:1px solid var(--border);color:var(--muted-lt);padding:12px 28px;border-radius:6px;cursor:pointer;font-family:var(--font-body);font-size:.85rem;transition:all .2s;" onmouseover="this.style.borderColor='var(--blue-bright)';this.style.color='var(--white)';" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted-lt)';">
+        ← Back to Main Site
+    </button>
+</div>
+
+</div><!-- /contact-page -->
+
+
+<!-- CONTACT DRAWER -->
+<div class="drawer" id="drawer">
+    <div class="drawer-glass">
+        <h3>Quick Message</h3>
+        <p>We respond within 24 hours.</p>
+        <input id="pid" class="field" readonly placeholder="Service / Request Type">
+        <input class="field" id="dname" placeholder="Full Name">
+        <input class="field" id="demail" placeholder="Work Email">
+        <textarea class="field" id="dmsg" placeholder="Tell us about your project…"></textarea>
+        <button class="send" onclick="handleSend()">Send Message →</button>
+        <button class="cancel" onclick="closeDrawer()">Cancel</button>
+    </div>
+</div>
+
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+/* ---- PAGE NAVIGATION ---- */
+function showContact(e){
+    if(e){e.preventDefault();}
+    document.getElementById('main-site').style.display='none';
+    const cp=document.getElementById('contact-page');
+    cp.classList.add('shown');
+    window.scrollTo({top:0,behavior:'smooth'});
+}
+function showMain(e){
+    if(e){e.preventDefault();}
+    document.getElementById('contact-page').classList.remove('shown');
+    document.getElementById('main-site').style.display='block';
+    window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---- HERO BG CAROUSEL ---- */
+const slides=document.querySelectorAll('.slide-bg');
+let bgIdx=0;
+setInterval(()=>{
+    slides[bgIdx].classList.remove('active');
+    bgIdx=(bgIdx+1)%slides.length;
+    slides[bgIdx].classList.add('active');
+},6000);
+
+/* ---- SPOTLIGHT ---- */
+const spotlightData=[
+    {title:"Web Architecture",desc:"(2026) Fullstack · Enterprise SaaS · React · Node",img:"https://images.unsplash.com/photo-1547658719-da2b81166b58?w=600&auto=format&fit=crop"},
+    {title:"AutoCAD Systems",desc:"High-Precision Drafts · Architectural BIM Frameworks",img:"https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&auto=format&fit=crop"},
+    {title:"Software Pipelines",desc:"Cloud Systems · Automation Scripts · Heavy Databases",img:"https://images.unsplash.com/photo-1605379399642-870262d3d051?w=600&auto=format&fit=crop"},
+    {title:"UI & Graphic Design",desc:"Corporate Identities · Brand Kits · High Fidelity UI/UX",img:"https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&auto=format&fit=crop"},
+    {title:"Mobile Applications",desc:"iOS & Android Native · React Native · Cross-Platform",img:"https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&auto=format&fit=crop"},
+];
+let stageIdx=0;
+function shiftStage(d){
+    stageIdx=(stageIdx+d+spotlightData.length)%spotlightData.length;
+    const s=spotlightData[stageIdx];
+    document.getElementById('spotlightTitle').innerText=s.title;
+    document.getElementById('spotlightTagline').innerText=s.desc;
+    document.getElementById('spotlightImage').src=s.img;
+}
+
+/* ---- CAROUSEL DUPLICATION ---- */
+const track=document.getElementById('carouselTrack');
+Array.from(track.children).forEach(c=>track.appendChild(c.cloneNode(true)));
+
+/* ---- SERVICES DATA ---- */
+const products=[
+    {id:'WD001',cat:'Website Dev',name:'Corporate Website',tag:'popular',img:'https://images.unsplash.com/photo-1547658719-da2b81166b58?w=400&auto=format&fit=crop'},
+    {id:'WD002',cat:'Website Dev',name:'E-Commerce Store',tag:'hot',img:'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&auto=format&fit=crop'},
+    {id:'WD003',cat:'Website Dev',name:'Portfolio Website',tag:'',img:'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=400&auto=format&fit=crop'},
+    {id:'WD004',cat:'Website Dev',name:'Landing Page',tag:'',img:'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=400&auto=format&fit=crop'},
+    {id:'WD005',cat:'Website Dev',name:'Real Estate Portal',tag:'new',img:'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&auto=format&fit=crop'},
+    {id:'WD006',cat:'Website Dev',name:'Blog & News Platform',tag:'',img:'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=400&auto=format&fit=crop'},
+    {id:'SD001',cat:'Software Dev',name:'CRM Software',tag:'hot',img:'https://images.unsplash.com/photo-1605379399642-870262d3d051?w=400&auto=format&fit=crop'},
+    {id:'SD002',cat:'Software Dev',name:'ERP System',tag:'',img:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&auto=format&fit=crop'},
+    {id:'SD003',cat:'Software Dev',name:'Hospital Management',tag:'',img:'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&auto=format&fit=crop'},
+    {id:'SD004',cat:'Software Dev',name:'School Management',tag:'new',img:'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&auto=format&fit=crop'},
+    {id:'SD005',cat:'Software Dev',name:'Inventory System',tag:'',img:'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&auto=format&fit=crop'},
+    {id:'SD006',cat:'Software Dev',name:'POS Application',tag:'',img:'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&auto=format&fit=crop'},
+    {id:'MD001',cat:'Mobile Dev',name:'iOS App',tag:'popular',img:'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&auto=format&fit=crop'},
+    {id:'MD002',cat:'Mobile Dev',name:'Android App',tag:'',img:'https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?w=400&auto=format&fit=crop'},
+    {id:'MD003',cat:'Mobile Dev',name:'React Native App',tag:'new',img:'https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?w=400&auto=format&fit=crop'},
+    {id:'MD004',cat:'Mobile Dev',name:'Flutter App',tag:'',img:'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&auto=format&fit=crop'},
+    {id:'MD005',cat:'Mobile Dev',name:'Food Delivery App',tag:'hot',img:'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&auto=format&fit=crop'},
+    {id:'MD006',cat:'Mobile Dev',name:'Fintech App',tag:'',img:'https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=400&auto=format&fit=crop'},
+    {id:'UX001',cat:'UI UX Design',name:'Mobile UI Kit',tag:'popular',img:'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400&auto=format&fit=crop'},
+    {id:'UX002',cat:'UI UX Design',name:'Web App Dashboard',tag:'',img:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&auto=format&fit=crop'},
+    {id:'UX003',cat:'UI UX Design',name:'Interaction Prototype',tag:'new',img:'https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=400&auto=format&fit=crop'},
+    {id:'UX004',cat:'UI UX Design',name:'SaaS Platform UI',tag:'',img:'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&auto=format&fit=crop'},
+    {id:'UX005',cat:'UI UX Design',name:'Usability Audit',tag:'',img:'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&auto=format&fit=crop'},
+    {id:'UX006',cat:'UI UX Design',name:'Brand Style Guide',tag:'hot',img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&auto=format&fit=crop'},
+    {id:'AC001',cat:'AutoCAD Design',name:'House Plan',tag:'popular',img:'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=400&auto=format&fit=crop'},
+    {id:'AC002',cat:'AutoCAD Design',name:'Architectural Blueprint',tag:'',img:'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400&auto=format&fit=crop'},
+    {id:'AC003',cat:'AutoCAD Design',name:'Structural 3D Model',tag:'new',img:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&auto=format&fit=crop'},
+    {id:'AC004',cat:'AutoCAD Design',name:'MEP Drawing',tag:'',img:'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&auto=format&fit=crop'},
+    {id:'AC005',cat:'AutoCAD Design',name:'Site Layout Plan',tag:'',img:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&auto=format&fit=crop'},
+    {id:'AC006',cat:'AutoCAD Design',name:'Interior Floor Plan',tag:'hot',img:'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=400&auto=format&fit=crop'},
+    {id:'GD001',cat:'Graphic Design',name:'Brand Identity Pack',tag:'popular',img:'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&auto=format&fit=crop'},
+    {id:'GD002',cat:'Graphic Design',name:'Logo Design',tag:'hot',img:'https://images.unsplash.com/photo-1524234107056-1c1f48f64ab8?w=400&auto=format&fit=crop'},
+    {id:'GD003',cat:'Graphic Design',name:'Social Media Pack',tag:'',img:'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&auto=format&fit=crop'},
+    {id:'GD004',cat:'Graphic Design',name:'Flyer & Poster Design',tag:'',img:'https://images.unsplash.com/photo-1588421357574-87938a86fa28?w=400&auto=format&fit=crop'},
+    {id:'GD005',cat:'Graphic Design',name:'Business Card',tag:'',img:'https://images.unsplash.com/photo-1634053632775-c5b66d3e6a73?w=400&auto=format&fit=crop'},
+    {id:'GD006',cat:'Graphic Design',name:'Pitch Deck Design',tag:'new',img:'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=400&auto=format&fit=crop'},
+    {id:'FA001',cat:'Fine Art',name:'Digital Painting',tag:'',img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&auto=format&fit=crop'},
+    {id:'FA002',cat:'Fine Art',name:'Character Illustration',tag:'popular',img:'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&auto=format&fit=crop'},
+    {id:'FA003',cat:'Fine Art',name:'Portrait Art',tag:'',img:'https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=400&auto=format&fit=crop'},
+    {id:'FA004',cat:'Fine Art',name:'Comic & Storyboard',tag:'new',img:'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&auto=format&fit=crop'},
+    {id:'FA005',cat:'Fine Art',name:'Concept Art',tag:'',img:'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&auto=format&fit=crop'},
+    {id:'FA006',cat:'Fine Art',name:'Motion Graphics',tag:'hot',img:'https://images.unsplash.com/photo-1616400619175-5beda3a17896?w=400&auto=format&fit=crop'},
+];
+
+const cats=[...new Set(products.map(x=>x.cat))];
+const tabsEl=document.getElementById('tabs');
+const gridEl=document.getElementById('grid');
+cats.forEach((c,i)=>{
+    const b=document.createElement('button');
+    b.className='tab';b.textContent=c;
+    b.onclick=()=>{
+        document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+        b.classList.add('active');renderGrid(c);
+    };
+    tabsEl.appendChild(b);
+    if(i===0)setTimeout(()=>b.click(),0);
+});
+function renderGrid(cat){
+    const tagClass={'popular':'','hot':'hot','new':'new'};
+    gridEl.innerHTML=products.filter(p=>p.cat===cat).map(p=>`
+        <div class="svc-card" onclick="openDrawer('${p.id}')">
+            <img src="${p.img}" alt="${p.name}" loading="lazy">
+            ${p.tag?`<div class="svc-tag ${tagClass[p.tag]||''}">${p.tag}</div>`:''}
+            <div class="svc-card-body">
+                <h4>${p.name}</h4>
+                <small>${p.id}</small>
+            </div>
+            <div class="svc-overlay">
+                <button class="ov-btn ov-get" onclick="event.stopPropagation();openDrawer('${p.id}')">Get</button>
+                <button class="ov-btn ov-join" onclick="event.stopPropagation();openDrawer('JOIN')">Join</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+/* ---- DRAWER ---- */
+function openDrawer(id){
+    document.getElementById('pid').value=id;
+    document.getElementById('drawer').classList.add('open');
+}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');}
+function handleSend(){
+    const n=document.getElementById('dname').value;
+    const e=document.getElementById('demail').value;
+    if(!n||!e){alert('Please fill in your name and email.');return;}
+    alert(`Thank you, ${n}! Your message has been sent to TLC. We'll reach out to ${e} within 24 hours.`);
+    closeDrawer();
+}
+
+/* ---- SEARCH ---- */
+function handleSearch(){
+    const q=document.getElementById('searchConsole').value.toLowerCase().trim();
+    if(!q){return;}
+    const match=products.filter(p=>p.name.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q));
+    if(match.length){
+        document.getElementById('services').scrollIntoView({behavior:'smooth'});
+        setTimeout(()=>{
+            const catMatch=match[0].cat;
+            document.querySelectorAll('.tab').forEach(b=>{if(b.textContent===catMatch){b.click();}});
+        },400);
+    }else{
+        alert(`No services found for "${q}". Try "web", "design", "AutoCAD", or "software".`);
+    }
+}
+
+/* ---- NEWSLETTER ---- */
+function handleNewsletter(){
+    const v=document.getElementById('nlEmail').value;
+    if(!v||!v.includes('@')){alert('Please enter a valid email.');return;}
+    alert(`You're now subscribed with ${v}. Welcome to the TLC community!`);
+    document.getElementById('nlEmail').value='';
+}
+
+/* ---- CONTACT FORM ---- */
+function toggleChip(el){el.classList.toggle('selected');}
+function submitContactForm(){
+    const fname=document.getElementById('cf_fname').value.trim();
+    const email=document.getElementById('cf_email').value.trim();
+    const type=document.getElementById('cf_type').value;
+    if(!fname){alert('Please enter your first name.');return;}
+    if(!email||!email.includes('@')){alert('Please enter a valid email address.');return;}
+    if(!type){alert('Please select the nature of your inquiry.');return;}
+    document.getElementById('formWrap').style.display='none';
+    document.getElementById('formSuccess').classList.add('shown');
+    window.scrollTo({top:document.getElementById('contact-page').offsetTop,behavior:'smooth'});
+}
+function resetForm(){
+    document.getElementById('formWrap').style.display='block';
+    document.getElementById('formSuccess').classList.remove('shown');
+    ['cf_fname','cf_lname','cf_email','cf_phone','cf_company','cf_msg'].forEach(id=>{document.getElementById(id).value='';});
+    document.getElementById('cf_type').selectedIndex=0;
+    document.getElementById('cf_budget').selectedIndex=0;
+    document.querySelectorAll('.chip.selected').forEach(c=>c.classList.remove('selected'));
+}
+
+/* ---- CLOSE DRAWER ON OUTSIDE CLICK ---- */
+document.addEventListener('click',e=>{
+    const drawer=document.getElementById('drawer');
+    if(drawer.classList.contains('open')&&!drawer.contains(e.target)){closeDrawer();}
+});
+</script>
+
     <a href="freelancersprofile.html"><div> Freelancers Profile</div></a>
 </body>
 </html>
